@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "xffTDVSiEXmkWKeihEoLo89rrZidyaO54gERr+LPTr8=",
+  "Source": "AttendenceApi",
+  "BasePath": "_content/AttendenceApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
