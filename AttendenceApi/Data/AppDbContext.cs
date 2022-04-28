@@ -2,10 +2,18 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace AttendenceApi.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<User,Role,int>
     {
+        public DbSet<Absence> Absences { get; set; }
+        public DbSet<AlteredSchedule> AlteredSchedules { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<Isic> Isics { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+
+
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

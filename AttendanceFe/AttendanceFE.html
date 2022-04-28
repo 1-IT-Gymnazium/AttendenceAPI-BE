@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="./style.css">
+	<title>ITGAttendance</title>
+</head>
+<body>
+	<div align="center">
+		<img src="./itg_logo.png" class="logo">
+	</div>
+	<div class="login-container">
+		<p>Login</p>
+		<hr style="margin:5%;margin-top:3%;height:2px;border-width:0;color:gray;background-color:gray">
+		<form>
+			<div class="mb-3">
+				<label for="username" class="form-label label"> ITG username </label>
+				<input type="text" class="form-control" id="username" placeholder="Username">
+			</div>
+			<div class="mb-3">
+				<label for="password" class="form-label label"> Password </label>
+				<input type="password" class="form-control" id="password" placeholder="password">
+			</div>
+		</form>
+		<div class="Remember">
+			<input class="form-check-input" type="checkbox" value="" id="rememberme">
+			<label class="form-check-label" for="rememberme">
+				Remember me
+			</label>
+		</div>
+		<div class="col-12 col-md-10 d-grid" style="margin:auto;">
+			<button class="btn btn-primary">Sign in</button>
+		</div>
+	</div>
+	<div style="text-align: center; margin-top: 2%">
+		<strong>Registration is not available as users are loaded from the domain.</strong>
+	</div>
+	<hr class="footer-fixed">
+	<div class="blockquote-footer" style="bottom: 0;">
+		
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous">
+</script>
+<script type="text/javascript">
+
+	$(function() {
+
+		function downloadData() {
+			$.ajax({
+				type: "POST",
+				accept: "application/json",
+				data: 
+				{
+					email: 'username',
+					password: 'password',
+					rememberMe: true
+				},
+				url: "https://localhost:5001/api/Auth/Login"
+			}).done(function (data) {
+				console.log(data);
+				redrawData(data);
+			});
+		}
+
+		function redrawData(data) {
+			var output = '';
+
+			if($(data).length > 0) {
+
+				$(data).each(function(){
+					output += `<div class="row"><div class="item">${this.name}</div><div class="item numbers">${this.balance} Kč</div></div>`;
+				});
+			}
+
+			$('#content').html(output);
+		}
+
+		downloadData();
+	});
+</script>
+</body>
+</html>

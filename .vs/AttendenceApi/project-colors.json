@@ -5,7 +5,17 @@
       "ProjectGuid": "2d6a8ea2-07fb-4d09-9bd6-f1485344a86a",
       "DisplayName": "AttendenceApi",
       "ColorIndex": 0
+    },
+    "668fc3a3-a2b4-4312-97a4-2a200bef4a78": {
+      "ProjectGuid": "668fc3a3-a2b4-4312-97a4-2a200bef4a78",
+      "DisplayName": "AttendenceApi",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }
