@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using AttendenceApi.Services;
+using AttendenceApi.Data.Indentity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +16,15 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<User, Role>(options =>
+{
+
+}).AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
- 
+  
 });
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 {
