@@ -8,4 +8,5 @@ namespace AttendenceApi.Data.Indentity
       public bool InSchool { get; set; }
 
     }
+
 }

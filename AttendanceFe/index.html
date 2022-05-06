@@ -59,7 +59,7 @@
 			console.log('jedeto')
 			var email = document.getElementById("username").value;
 			var password = document.getElementById("password").value;
-			
+			var rememberMe = document.getElementById("rememberMe").checked;
 			$.ajax({
 				type: "POST",
 				contentType: "application/json;charset=utf-8",
@@ -67,13 +67,21 @@
 				{
 					email: email,
 					password: password,
-					rememberMe: false
+					rememberMe: rememberMe
 				}),
 				url: "https://localhost:44314/api/Auth/Authenticate",
 
 			}).done(function (data) {
 				console.log(data);
-				
+				if(data == true)
+				{
+					window.location.replace("./student/home.html")
+				}
+				if(data == false)
+				{
+					window.location.replace("./admin/home.html")
+				}
+
 			});
 		}
 

@@ -14,12 +14,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+   
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<User, Role>(options =>
 {
 
-}).AddEntityFrameworkStores<AppDbContext>();
+}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -32,6 +33,11 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     builder.AllowAnyMethod();
     builder.AllowAnyHeader();
 }));
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+
+});
 
 
 

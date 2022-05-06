@@ -7,11 +7,11 @@ namespace AttendenceApi.Data
 {
     public class AppDbContext : IdentityDbContext<User,Role,int>
     {
-        public DbSet<Absence> Absences { get; set; }
-        public DbSet<AlteredSchedule> AlteredSchedules { get; set; }
-        public DbSet<Class> Classes { get; set; }
-        public DbSet<Isic> Isics { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<Absence> Absences { get; set; } = null!;
+        public DbSet<AlteredSchedule> AlteredSchedules { get; set; } = null!;
+        public DbSet<Class> Classes { get; set; } = null!;
+        public DbSet<Isic> Isics { get; set; }  =null!;
+        public DbSet<Schedule> Schedules { get; set; } = null!;
 
 
 
