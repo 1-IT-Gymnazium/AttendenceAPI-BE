@@ -104,18 +104,18 @@
 				<thead>
 					<tr>
 						<th scope="col"></th>
-						<th scope="col">cas here</th>
-						<th scope="col">cas here</th>
-						<th scope="col">cas here</th>
-						<th scope="col">cas here</th>
-						<th scope="col">cas here</th>
-						<th scope="col">cas here</th>
-						<th scope="col">cas here</th>
+						<th scope="col">8:30-9:15</th>
+						<th scope="col">9:15-10:00</th>
+						<th scope="col">10:20-11:05</th>
+						<th scope="col">11:05-11:50</th>
+						<th scope="col">11:55-12:40</th>
+						<th scope="col">13:15-14:00</th>
+						<th scope="col">14:05-14:50</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<th scope="row">1.</th>
+						<th scope="row">Po</th>
 						<td>hodina</td>
 						<td>hodina</td>
 						<td>hodina</td>
@@ -125,7 +125,7 @@
 						<td>hodina</td>
 					</tr>
 					<tr>
-						<th scope="row">2.</th>
+						<th scope="row">Út</th>
 						<td>hodina</td>
 						<td>hodina</td>
 						<td>hodina</td>
@@ -135,7 +135,7 @@
 						<td>hodina</td>
 					</tr>
 					<tr>
-						<th scope="row">3.</th>
+						<th scope="row">St</th>
 						<td>hodina</td>
 						<td>hodina</td>
 						<td>hodina</td>
@@ -145,7 +145,7 @@
 						<td>hodina</td>
 					</tr>
 					<tr>
-						<th scope="row">4.</th>
+						<th scope="row">Čt</th>
 						<td>hodina</td>
 						<td>hodina</td>
 						<td>hodina</td>
@@ -155,7 +155,7 @@
 						<td>hodina</td>
 					</tr>
 					<tr>
-						<th scope="row">5.</th>
+						<th scope="row">Pá</th>
 						<td>hodina</td>
 						<td>hodina</td>
 						<td>hodina</td>
@@ -167,6 +167,10 @@
 				</tbody>
 			</table>
 		</div>
+		<div class="col-12 col-md-10 d-grid" style="margin:auto;">
+			<a class="btn btn-primary" onclick="downloadData()"> Sign in </a>
+		</div>
+		
 		<div class="container container-fluid table-absence">
 			<p class="title">Absence</p>
 			<table class="table table-bordered border-dark ">
@@ -245,5 +249,29 @@
 		</div>
 	</footer>
 	<script src="script.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous">
+</script>
+<script type="text/javascript">
+
+		function downloadData() {
+			console.log('jedeto')
+
+			$.ajax({
+				type: "GET",
+				contentType: "application/json;charset=utf-8",
+				
+				url: "https://localhost:44314/Get/Timetable",
+
+			}).done(function (data) {
+				console.log(data);
+
+
+			});
+		}
+
+		
+</script>
 </body>
 </html>

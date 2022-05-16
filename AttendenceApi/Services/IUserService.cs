@@ -25,12 +25,12 @@ namespace AttendenceApi.Services
         }
         public async Task<bool> LoginAsync(LoginViewModel model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, lockoutOnFailure: false);
             
             if (result.Succeeded == true)
             {
                 _logger.LogInformation("User logged in");
-                var User = _context.Users.Single(s => s.UserName == model.Email);
+                var User = _context.Users.Single(s => s.UserName == model.Name);
 
                 return result.Succeeded;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AttendenceApi.Data.Indentity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,5 +10,8 @@ namespace AttendenceApi.Data
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+
+
+
     }
 }

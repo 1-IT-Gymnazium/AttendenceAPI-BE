@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AttendenceApi.Data.Indentity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,9 @@ namespace AttendenceApi.Data
         public int? ClassId { get; set; }
         public Class Class { get; set; } = null!;
         public string Day { get; set; } = null!;
-        
+        public string Date { get; set; } = null!;
+
+       
         public int? EndTimeOfLessonsInMinutes { get; set; }
        
     }
