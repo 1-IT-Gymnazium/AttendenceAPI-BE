@@ -3,6 +3,7 @@ using AbsenceProjektSDarou.Models.Identity;
 using AttendenceApi.Data;
 using AttendenceApi.Data.Indentity;
 using AttendenceApi.Services;
+using AttendenceApi.Utils;
 using AttendenceApi.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StrictCode.Agrades.Identity.Api.Utils;
+
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,11 +25,13 @@ namespace AttendenceApi.Controllers
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
+        
         private readonly AppDbContext _context;
         private readonly ILogger<AuthController> _logger;
         private readonly SignInManager<User> _signInManager;
-        public AuthController(IUserService userService, AppDbContext context, ILogger<AuthController> logger, IHttpContextAccessor contextAccessor, UserManager<User> user, SignInManager<User> signInManager, RoleManager<Role> roleManager)
+        private readonly Claim _userClaim;
+        private readonly Claim _adminClaim;
+        public AuthController(IUserService userService, AppDbContext context, ILogger<AuthController> logger, IHttpContextAccessor contextAccessor, UserManager<User> user, SignInManager<User> signInManager)
         {
             _userService = userService;
             _context = context;
@@ -36,7 +39,9 @@ namespace AttendenceApi.Controllers
             _contextAccessor = contextAccessor;
             _userManager = user;
             _signInManager = signInManager;
-            _roleManager = roleManager;
+            _userClaim = new Claim("USER_CLAIM", Claims.USER);
+            _adminClaim = new Claim("ADMIN", Claims.SUPERUSER);
+            
         }
 
       
@@ -61,7 +66,7 @@ namespace AttendenceApi.Controllers
                 IsAuthenticated = true,
             });
         }
-
+        
         
         [Tags("Authentications") ]
         [HttpPost("Authenticate")]
@@ -99,16 +104,16 @@ namespace AttendenceApi.Controllers
             //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProps);
             var ussser = HttpContext.User;
 
-            var role = _context.UserRoles.Single(s => s.UserId == user.Id);
-            if (role.RoleId == new Guid("18025609-4658-4282-a14e-0efa3cd293aa"))
+
+            if (_userManager.GetClaimsAsync(user).Result.Contains(_userClaim))
             {
                 return Ok("Student");
             }
-            if (role.RoleId == new Guid("46b98e3f-6fd9-4da7-922a-6540235a9feb"))
+            if (_userManager.GetClaimsAsync(user).Result.Contains(_adminClaim))
             {
                 return Ok("Admin");
             }
-            if (role == null)
+            if (_userManager.GetClaimsAsync(user) == null)
             {
                 return BadRequest("TooBad");
             }
@@ -123,7 +128,10 @@ namespace AttendenceApi.Controllers
         {
             var classId = GuidFromString(model.ClassId.ToUpper());
             var user = new User { ClassId = classId, Email = model.Email, InSchool = false, UserName = model.UserName };
+           
             var result = await _userService.CreateUser(user, model.Password);
+
+            await _userManager.AddClaimAsync(user, new Claim("USER", "CLAIM_USER"));
             return Ok(result);
         }
         private Guid? TryGetUserIdFromContext()
@@ -154,12 +162,7 @@ namespace AttendenceApi.Controllers
                 return new Guid(hash);
             }
         }
-        [HttpPost("Create/Role")]
-        public IActionResult CreateRole(string name)
-        {
-            var result = _roleManager.CreateAsync(new Role { Name = name }).Result;
-            return Ok(result);
-        }
+
 
 
     }
