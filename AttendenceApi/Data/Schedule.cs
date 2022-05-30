@@ -9,8 +9,8 @@ namespace AttendenceApi.Data
 {
     public class Schedule
     {
-        public int Id { get; set; }
-        public int? ClassId { get; set; }
+        public Guid Id { get; set; }
+        public Guid? ClassId { get; set; }
         public Class Class { get; set; } = null!;
         public string Day { get; set; } = null!;
         public string Date { get; set; } = null!;

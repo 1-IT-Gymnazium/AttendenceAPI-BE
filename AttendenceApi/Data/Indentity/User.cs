@@ -2,9 +2,9 @@
 
 namespace AttendenceApi.Data.Indentity
 {
-    public class User : IdentityUser<int>
+    public class User : IdentityUser<Guid>
     {
-      public int? ClassId { get; set; }
+      public Guid? ClassId { get; set; }
       public bool InSchool { get; set; }
 
     }

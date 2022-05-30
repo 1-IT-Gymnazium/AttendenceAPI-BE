@@ -28,7 +28,7 @@ namespace AttendenceApi.Controllers
         }
 
         [HttpPost("Get/SpecificTimeTable")]
-        public IActionResult GetSpecificTimeTable(string Date, int ClassId)
+        public IActionResult GetSpecificTimeTable(string Date, Guid ClassId)
         {
             var Schedule = _context.Schedules.SingleOrDefault(s => s.ClassId == ClassId && Date == s.Date);
             return Ok(Schedule);

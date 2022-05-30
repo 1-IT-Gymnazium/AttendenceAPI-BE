@@ -9,9 +9,9 @@ namespace AttendenceApi.Data
 {
     public class Isic
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string IsicId { get; set; } = null!;
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; } = null!;
     }
 }
