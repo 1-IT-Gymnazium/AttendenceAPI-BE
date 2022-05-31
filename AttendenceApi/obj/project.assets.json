@@ -10094,19 +10094,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Juryn\\.nuget\\packages\\": {}
+    "C:\\Users\\1024\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Juryn\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+      "projectUniqueName": "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
       "projectName": "AttendenceApi",
-      "projectPath": "C:\\Users\\Juryn\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
-      "packagesPath": "C:\\Users\\Juryn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Juryn\\source\\repos\\attendencyprojectv2\\AttendenceApi\\obj\\",
+      "projectPath": "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+      "packagesPath": "C:\\Users\\1024\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Juryn\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\1024\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -10189,7 +10189,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   }

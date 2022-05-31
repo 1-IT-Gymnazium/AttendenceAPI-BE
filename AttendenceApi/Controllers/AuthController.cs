@@ -39,12 +39,12 @@ namespace AttendenceApi.Controllers
             _contextAccessor = contextAccessor;
             _userManager = user;
             _signInManager = signInManager;
-            _userClaim = new Claim("USER_CLAIM", Claims.USER);
+            _userClaim = new Claim("CLAIM_USER", Claims.USER);
             _adminClaim = new Claim("ADMIN", Claims.SUPERUSER);
             
         }
 
-      
+        [Authorize]
         [HttpGet("UserInfo")]
         public async Task<ActionResult<LoggedUserVm>> GetUserInfo()
         {
@@ -87,25 +87,11 @@ namespace AttendenceApi.Controllers
 
             var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
 
-            var authProps = new AuthenticationProperties
-            {
-                AllowRefresh = true,
-                ExpiresUtc = DateTimeOffset.Now.AddDays(1),
-                IsPersistent = true,
-            };
-            var claims = new List<Claim>
-                {
-                    new Claim("user", user.UserName),
-                    new Claim("role", "Student")
-                };
+            await HttpContext.SignInAsync(userPrincipal);
+            var claims = await _userManager.GetClaimsAsync(user);
 
-            await HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role")));
-
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProps);
-            var ussser = HttpContext.User;
-
-
-            if (_userManager.GetClaimsAsync(user).Result.Contains(_userClaim))
+            
+            if (claims[0].Value == _userClaim.Value)
             {
                 return Ok("Student");
             }
@@ -131,7 +117,7 @@ namespace AttendenceApi.Controllers
            
             var result = await _userService.CreateUser(user, model.Password);
 
-            await _userManager.AddClaimAsync(user, new Claim("USER", "CLAIM_USER"));
+            await _userManager.AddClaimAsync(user,_userClaim);
             return Ok(result);
         }
         private Guid? TryGetUserIdFromContext()
