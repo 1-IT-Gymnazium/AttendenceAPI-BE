@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using AttendenceApi.Services;
 using AttendenceApi.Data.Indentity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using AttendenceApi.Utils;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
    
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<User, Role>(options =>
+builder.Services.AddIdentityCore<User>(options =>
 {
 })
     .AddEntityFrameworkStores<AppDbContext>()
@@ -43,7 +45,19 @@ builder.Services
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
 builder.Services
-    .AddAuthorization();
+    .AddAuthorization(config =>
+    {
+        config.AddPolicy(Policies.SUPERADMIN, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.RequireClaim(Claims.SUPERUSER);
+        });
+        config.AddPolicy(Policies.USER, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.AddRequirements(new ProjectAdminRequirement());
+        });
+    });
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 {

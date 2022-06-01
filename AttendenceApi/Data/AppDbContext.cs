@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AttendenceApi.Data
 {
-    public class AppDbContext : IdentityDbContext<User,Role,Guid>
+    public class AppDbContext : IdentityUserContext<User, Guid>
     {
         public DbSet<Absence> Absences { get; set; } = null!;
         public DbSet<AlteredSchedule> AlteredSchedules { get; set; } = null!;

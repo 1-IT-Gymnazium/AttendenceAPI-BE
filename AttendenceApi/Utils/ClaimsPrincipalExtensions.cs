@@ -1,7 +1,7 @@
 using System.Security.Claims;
 
-namespace StrictCode.Agrades.Identity.Api.Utils;
-public static class Claims
+namespace AttendenceApi.Utils;
+public static class ClaimsPrincipalExtensions
 {
     public static string GetName(this ClaimsPrincipal user)
     {
