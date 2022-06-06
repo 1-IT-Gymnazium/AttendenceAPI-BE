@@ -18,6 +18,7 @@ using System.Text;
 
 namespace AttendenceApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -44,7 +45,7 @@ namespace AttendenceApi.Controllers
             
         }
 
-        [Authorize]
+        
         [HttpGet("UserInfo")]
         public async Task<ActionResult<LoggedUserVm>> GetUserInfo()
         {
@@ -69,6 +70,7 @@ namespace AttendenceApi.Controllers
         
         
         [Tags("Authentications") ]
+        [AllowAnonymous]
         [HttpPost("Authenticate")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel model)
         {
@@ -109,6 +111,7 @@ namespace AttendenceApi.Controllers
             return BadRequest();
 
         }
+
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] CreateVM model)
         {
@@ -119,7 +122,25 @@ namespace AttendenceApi.Controllers
 
             await _userManager.AddClaimAsync(user,_userClaim);
             return Ok(result);
+        
         }
+
+
+        [Authorize(Policy = Policies.SUPERADMIN)]
+        [HttpPost("AddUserAdminClaim")]
+        public async Task<IActionResult> AddUserAdminClaim([FromBody] LoggedUserVm UserToAdd)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(s => s.UserName == UserToAdd.UserName);
+            if (user == null)
+            {
+                return BadRequest("UserNotFound");
+            }
+            var result = _userManager.AddClaimAsync(user, _adminClaim).Result;
+            return Ok(result);
+        }
+
+
+
         private Guid? TryGetUserIdFromContext()
         {
             var user = GetUserPrincipalFromContext();
@@ -129,8 +150,9 @@ namespace AttendenceApi.Controllers
             }
             return user.GetUserId();
         }
+
         private ClaimsPrincipal GetUserPrincipalFromContext()
-        {
+        { 
             var user = _signInManager.Context.User;
 
             _ = _contextAccessor.HttpContext ?? throw new ArgumentNullException("HttpContextAccessor.HttpContext");

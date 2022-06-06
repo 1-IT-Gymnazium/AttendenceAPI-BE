@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj": {}
+    "C:\\Users\\1024\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj": {
+    "C:\\Users\\1024\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+        "projectUniqueName": "C:\\Users\\1024\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
         "projectName": "AttendenceApi",
-        "projectPath": "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+        "projectPath": "C:\\Users\\1024\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
         "packagesPath": "C:\\Users\\1024\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\1024\\source\\repos\\att2\\attendencyprojectv2\\AttendenceApi\\obj\\",
+        "outputPath": "C:\\Users\\1024\\source\\repos\\attendencyprojectv2\\AttendenceApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\1024\\AppData\\Roaming\\NuGet\\NuGet.Config",
