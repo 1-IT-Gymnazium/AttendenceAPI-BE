@@ -3,6 +3,8 @@ using AttendenceApi.Data.Indentity;
 using AttendenceApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AttendenceApi.Controllers
 {
@@ -28,11 +30,25 @@ namespace AttendenceApi.Controllers
         }
 
         [HttpPost("Get/SpecificTimeTable")]
-        public IActionResult GetSpecificTimeTable(string Date, Guid ClassId)
+        public IActionResult GetSpecificTimeTable(string Date, string ClassId)
         {
-            var Schedule = _context.Schedules.SingleOrDefault(s => s.ClassId == ClassId && Date == s.Date);
-            return Ok(Schedule);
+
+            var Schedule = _context.Schedules.Single(s => s.ClassId == GuidFromString(ClassId.ToUpper()) && Date == s.Date);
+            var Lessons = _context.Lessons.Where(s => s.ScheduleId == Schedule.Id);
+            var output = new List<Schedule<List<Lesson>>>();
+            return Ok(Schedule); 
         }
+        
+        private static Guid GuidFromString(string input)
+        {
+
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(input));
+                return new Guid(hash);
+            }
+        }
+
 
     }
 }

@@ -41,11 +41,11 @@ namespace AttendenceApi.Controllers
             _userManager = user;
             _signInManager = signInManager;
             _userClaim = new Claim("CLAIM_USER", Claims.USER);
-            _adminClaim = new Claim("ADMIN", Claims.SUPERUSER);
+            _adminClaim = new Claim(Claims.SUPERUSER, Claims.SUPERUSER);
             
         }
 
-        
+        [Tags("Authentications")]
         [HttpGet("UserInfo")]
         public async Task<ActionResult<LoggedUserVm>> GetUserInfo()
         {
@@ -67,9 +67,9 @@ namespace AttendenceApi.Controllers
                 IsAuthenticated = true,
             });
         }
-        
-        
-        [Tags("Authentications") ]
+
+
+        [Tags("Authentications")]
         [AllowAnonymous]
         [HttpPost("Authenticate")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel model)
@@ -127,6 +127,7 @@ namespace AttendenceApi.Controllers
 
 
         [Authorize(Policy = Policies.SUPERADMIN)]
+        [Tags("Authentications")]
         [HttpPost("AddUserAdminClaim")]
         public async Task<IActionResult> AddUserAdminClaim([FromBody] LoggedUserVm UserToAdd)
         {
