@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.DirectoryServices;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using DirectoryEntry = System.DirectoryServices.DirectoryEntry;
 
 namespace AttendenceApi.Controllers
 {
@@ -68,7 +70,7 @@ namespace AttendenceApi.Controllers
             });
         }
 
-
+        /*
         [Tags("Authentications")]
         [AllowAnonymous]
         [HttpPost("Authenticate")]
@@ -110,8 +112,9 @@ namespace AttendenceApi.Controllers
 
             return BadRequest();
 
-        }
+        } */
 
+        [AllowAnonymous]
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] CreateVM model)
         {
@@ -126,6 +129,7 @@ namespace AttendenceApi.Controllers
         }
 
 
+
         [Authorize(Policy = Policies.SUPERADMIN)]
         [Tags("Authentications")]
         [HttpPost("AddUserAdminClaim")]
@@ -138,6 +142,40 @@ namespace AttendenceApi.Controllers
             }
             var result = _userManager.AddClaimAsync(user, _adminClaim).Result;
             return Ok(result);
+        }
+
+        [HttpPost("logindb")]
+        [AllowAnonymous]
+        public async Task<bool> LoginAsyncc(LoginViewModel model)
+        {
+            if (true)
+            {
+
+                
+                 var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
+                var directorySearcher = new DirectorySearcher(directoryEntry);
+                try
+                {
+                    var result = directorySearcher.FindAll();
+                }
+                catch (DirectoryServicesCOMException ex)
+                {
+                    return false;
+                }
+
+
+                var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
+                if (user == null) return false;
+                var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
+                await HttpContext.SignInAsync(userPrincipal);
+
+                return true;
+            }
+            else
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
+                return result.Succeeded;
+            }
         }
 
 

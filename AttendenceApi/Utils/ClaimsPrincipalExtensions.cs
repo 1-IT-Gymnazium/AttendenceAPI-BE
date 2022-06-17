@@ -19,6 +19,7 @@ public static class ClaimsPrincipalExtensions
         {
             throw new InvalidOperationException("user not logged in");
         }
+        var a = user.Claims;
         var idString = user.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         return Guid.Parse(idString);
     }
