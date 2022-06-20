@@ -3,6 +3,7 @@ using System;
 using AttendenceApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AttendenceApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220607094054_ScheduleIdAddedToLessons")]
+    partial class ScheduleIdAddedToLessons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +62,7 @@ namespace AttendenceApi.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("EndTimeOfLessonsInMinutes")
                         .HasColumnType("integer");
@@ -187,8 +189,8 @@ namespace AttendenceApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("EndTimeInMinutes")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("LessonIndex")
                         .HasColumnType("integer");
@@ -200,8 +202,8 @@ namespace AttendenceApi.Migrations
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("StartTimeInMinutes")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid");
@@ -221,7 +223,7 @@ namespace AttendenceApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ClassId")
+                    b.Property<Guid?>("ClassId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Date")
@@ -362,9 +364,7 @@ namespace AttendenceApi.Migrations
                 {
                     b.HasOne("AttendenceApi.Data.Class", "Class")
                         .WithMany()
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClassId");
 
                     b.Navigation("Class");
                 });

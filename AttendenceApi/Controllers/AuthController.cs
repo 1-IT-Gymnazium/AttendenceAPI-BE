@@ -11,13 +11,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.DirectoryServices;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using DirectoryEntry = System.DirectoryServices.DirectoryEntry;
 
 namespace AttendenceApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -39,12 +42,12 @@ namespace AttendenceApi.Controllers
             _contextAccessor = contextAccessor;
             _userManager = user;
             _signInManager = signInManager;
-            _userClaim = new Claim("USER_CLAIM", Claims.USER);
-            _adminClaim = new Claim("ADMIN", Claims.SUPERUSER);
+            _userClaim = new Claim("CLAIM_USER", Claims.USER);
+            _adminClaim = new Claim(Claims.SUPERUSER, Claims.SUPERUSER);
             
         }
 
-      
+        [Tags("Authentications")]
         [HttpGet("UserInfo")]
         public async Task<ActionResult<LoggedUserVm>> GetUserInfo()
         {
@@ -66,9 +69,10 @@ namespace AttendenceApi.Controllers
                 IsAuthenticated = true,
             });
         }
-        
-        
-        [Tags("Authentications") ]
+
+        /*
+        [Tags("Authentications")]
+        [AllowAnonymous]
         [HttpPost("Authenticate")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel model)
         {
@@ -87,25 +91,11 @@ namespace AttendenceApi.Controllers
 
             var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
 
-            var authProps = new AuthenticationProperties
-            {
-                AllowRefresh = true,
-                ExpiresUtc = DateTimeOffset.Now.AddDays(1),
-                IsPersistent = true,
-            };
-            var claims = new List<Claim>
-                {
-                    new Claim("user", user.UserName),
-                    new Claim("role", "Student")
-                };
+            await HttpContext.SignInAsync(userPrincipal);
+            var claims = await _userManager.GetClaimsAsync(user);
 
-            await HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role")));
-
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProps);
-            var ussser = HttpContext.User;
-
-
-            if (_userManager.GetClaimsAsync(user).Result.Contains(_userClaim))
+            
+            if (claims[0].Value == _userClaim.Value)
             {
                 return Ok("Student");
             }
@@ -122,7 +112,9 @@ namespace AttendenceApi.Controllers
 
             return BadRequest();
 
-        }
+        } */
+
+        [AllowAnonymous]
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] CreateVM model)
         {
@@ -131,9 +123,63 @@ namespace AttendenceApi.Controllers
            
             var result = await _userService.CreateUser(user, model.Password);
 
-            await _userManager.AddClaimAsync(user, new Claim("USER", "CLAIM_USER"));
+            await _userManager.AddClaimAsync(user,_userClaim);
+            return Ok(result);
+        
+        }
+
+
+
+        [Authorize(Policy = Policies.SUPERADMIN)]
+        [Tags("Authentications")]
+        [HttpPost("AddUserAdminClaim")]
+        public async Task<IActionResult> AddUserAdminClaim([FromBody] LoggedUserVm UserToAdd)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(s => s.UserName == UserToAdd.UserName);
+            if (user == null)
+            {
+                return BadRequest("UserNotFound");
+            }
+            var result = _userManager.AddClaimAsync(user, _adminClaim).Result;
             return Ok(result);
         }
+
+        [HttpPost("logindb")]
+        [AllowAnonymous]
+        public async Task<bool> LoginAsyncc(LoginViewModel model)
+        {
+            if (true)
+            {
+
+                
+                 var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
+                var directorySearcher = new DirectorySearcher(directoryEntry);
+                try
+                {
+                    var result = directorySearcher.FindAll();
+                }
+                catch (DirectoryServicesCOMException ex)
+                {
+                    return false;
+                }
+
+
+                var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
+                if (user == null) return false;
+                var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
+                await HttpContext.SignInAsync(userPrincipal);
+
+                return true;
+            }
+            else
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
+                return result.Succeeded;
+            }
+        }
+
+
+
         private Guid? TryGetUserIdFromContext()
         {
             var user = GetUserPrincipalFromContext();
@@ -143,8 +189,9 @@ namespace AttendenceApi.Controllers
             }
             return user.GetUserId();
         }
+
         private ClaimsPrincipal GetUserPrincipalFromContext()
-        {
+        { 
             var user = _signInManager.Context.User;
 
             _ = _contextAccessor.HttpContext ?? throw new ArgumentNullException("HttpContextAccessor.HttpContext");
