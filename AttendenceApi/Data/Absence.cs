@@ -15,8 +15,7 @@ namespace AttendenceApi.Data
         public DateTime Date { get; set; }
         public DateTime? TimeOfArrival { get; set; }
         public DateTime? TimeOfExit { get; set; }
+        public string? Reason { get; set; } 
  
-
-
     }
 }

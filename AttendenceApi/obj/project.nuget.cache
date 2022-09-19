@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "JdFR1RTEy8BmCBPL6OY7iJZJ8UEfmZzUE/+RWpPJUy+s4pTl8wFQZHdilCiFB+nVyEGVhdzJ9cnBYTpOQzU3OA==",
+  "dgSpecHash": "ZK2ypZQkOznfzZt37Q7xncXgatNhNtuqLqv2CFmM79eD2qDMmux6gj0TPK3QBLBloZ+ThM0txnEPCW9xJNHBwQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\1024\\Desktop\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+  "projectFilePath": "C:\\Users\\1024\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\1024\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\1024\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
