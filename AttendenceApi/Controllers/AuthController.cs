@@ -118,6 +118,7 @@ namespace AttendenceApi.Controllers
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] CreateVM model)
         {
+            
             var classId = GuidFromString(model.ClassId.ToUpper());
             var user = new User { ClassId = classId, Email = model.Email, InSchool = false, UserName = model.UserName };
            

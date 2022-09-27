@@ -51,11 +51,19 @@ namespace AttendenceApi.Controllers
             var user = GetUserPrincipalFromContext();
             return _context.Absences.Where(s => user.GetUserId() == s.UserId).ToList();
         }
+
+
+
+
         public async Task<ActionResult<List<Absence>>> GetSpecificUserAbsence(string userName)
         {
             var user = _context.Users.SingleOrDefault(s => s.UserName == userName);
             return _context.Absences.Where(s => user.Id == s.UserId).ToList();
         }
+
+
+
+        /*
         [HttpPost("Absence/Write")]
         public async Task<ActionResult> AbsenceZapis([FromBody] string Isic)
         {
@@ -81,7 +89,7 @@ namespace AttendenceApi.Controllers
 
 
 
-            
+
             if (((int)DateTime.Now.TimeOfDay.TotalMinutes) < 515 && User.InSchool == false) // if user isnt in school and isnt late based on start time of the first hour in students schedule
             {
                 //Saves student into in school DB (doesnt write him any absence)
@@ -92,7 +100,7 @@ namespace AttendenceApi.Controllers
             }
             if (((int)DateTime.Now.TimeOfDay.TotalMinutes) > 515 && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
             {
-               
+
                 var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.Now, Excused = false }; //inicializes new absence for the student
 
                 _context.Absences.Add(content); // adds absence to DB
@@ -100,7 +108,7 @@ namespace AttendenceApi.Controllers
                 User.InSchool = true; //sets user as in school
 
                 _context.Users.Update(User); //updates user in DB
-               
+
 
                 _context.SaveChanges();
 
@@ -110,14 +118,74 @@ namespace AttendenceApi.Controllers
 
 
 
-            private ClaimsPrincipal GetUserPrincipalFromContext()
-            {
-                var user = _signInManager.Context.User;
 
-                _ = _contextAccessor.HttpContext ?? throw new ArgumentNullException("HttpContextAccessor.HttpContext");
-                return _contextAccessor.HttpContext.User;
+
+        }
+        */
+        [HttpPost("excuse")]
+        public async Task<IActionResult> ExcuseAbsence([FromBody] List<AbsenceExcuseVM> content, int pin) //Endpoint for excusing, takes list of dates and reasons and 1 pin code 
+        {
+            
+            var user = _context.Users.SingleOrDefault(s => s.Id == GetUserPrincipalFromContext().GetUserId()); // gets user from DB
+            if (user == null) // if user isnt found
+            {
+                return NotFound();
+            }
+            SHA256 sha256Hash = SHA256.Create();
+            string hash = GetHash(sha256Hash, pin);
+
+            if (user.PinHash == hash) // if pin that the user sent matches the pin in database 
+            {
+                for (int i = 0; i < content.Count; i++) // for to iterate through all the sent absences
+                {
+                    Absence absence = _context.Absences.SingleOrDefault(s => s.UserId == user.Id && s.Date == content[i].Date && s.Excused == false); // finds absence in database based on user id and date of the absence
+                    absence.Excused = true; //changes absences status to excused
+                    absence.Reason = content[i].Reason; // writes reason of missing in database
+                    _context.Update(absence); // updates the absence in database
+                    
+                   
+                }
+                _context.SaveChanges();
+                return Ok("Succesfully excused");
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+            return BadRequest();
+           
+           
+
+
+        }
+
+
+        private ClaimsPrincipal GetUserPrincipalFromContext()
+        {
+            var user = _signInManager.Context.User;
+
+            _ = _contextAccessor.HttpContext ?? throw new ArgumentNullException("HttpContextAccessor.HttpContext");
+            return _contextAccessor.HttpContext.User;
+        }
+        private static string GetHash(HashAlgorithm hashAlgorithm, int input)
+        {
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = hashAlgorithm.ComputeHash(BitConverter.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            var sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
             }
 
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
         }
     }
 }
