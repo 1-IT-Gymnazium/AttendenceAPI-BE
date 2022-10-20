@@ -54,7 +54,7 @@ namespace AttendenceApi.Controllers
 
 
 
-
+        [HttpPost("GetSpecificUser")]
         public async Task<ActionResult<List<Absence>>> GetSpecificUserAbsence(string userName)
         {
             var user = _context.Users.SingleOrDefault(s => s.UserName == userName);

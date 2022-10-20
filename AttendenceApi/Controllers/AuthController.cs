@@ -201,7 +201,7 @@ namespace AttendenceApi.Controllers
 
 
 
-        private static Guid GuidFromString(string input)
+        public static Guid GuidFromString(string input)
         {
 
             using (MD5 md5 = MD5.Create())

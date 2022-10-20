@@ -7,7 +7,8 @@ using AttendenceApi.Services;
 using AttendenceApi.Data.Indentity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using AttendenceApi.Utils;
-
+using AttendenceApi.Data.NewFolder;
+using AttendenceApi.Data.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,5 +108,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+using var scope = app.Services.CreateScope();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+await UserSeed.CreateAdmin(userManager, dbContext);
+await AbsenceSeed.CreateAbsence(userManager, dbContext);
 
 app.Run();

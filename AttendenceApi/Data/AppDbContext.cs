@@ -1,4 +1,6 @@
-﻿using AttendenceApi.Data.Indentity;
+﻿using AttendenceApi.Controllers;
+using AttendenceApi.Data.Indentity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,5 +35,6 @@ namespace AttendenceApi.Data
             var assemblyWithConfiguration = GetType().Assembly;
             builder.ApplyConfigurationsFromAssembly(assemblyWithConfiguration);
         }
+       
     }
 }
