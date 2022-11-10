@@ -113,5 +113,8 @@ var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 await UserSeed.CreateAdmin(userManager, dbContext);
 await AbsenceSeed.CreateAbsence(userManager, dbContext);
+await ClassSeed.CreateClass(dbContext);
+await ScheduleSeed.CreateSchedule(dbContext);
+await LessonSeed.CreateLessons(dbContext);
 
 app.Run();

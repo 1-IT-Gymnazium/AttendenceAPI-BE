@@ -3,6 +3,7 @@ using System;
 using AttendenceApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AttendenceApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221102110005_DateChanges2")]
+    partial class DateChanges2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,7 +80,7 @@ namespace AttendenceApi.Migrations
                     b.ToTable("AlteredSchedules");
                 });
 
-            modelBuilder.Entity("AttendenceApi.Data.Classes", b =>
+            modelBuilder.Entity("AttendenceApi.Data.Class", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -204,9 +206,6 @@ namespace AttendenceApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Room")
-                        .HasColumnType("text");
-
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uuid");
 
@@ -329,7 +328,7 @@ namespace AttendenceApi.Migrations
 
             modelBuilder.Entity("AttendenceApi.Data.AlteredSchedule", b =>
                 {
-                    b.HasOne("AttendenceApi.Data.Classes", "Class")
+                    b.HasOne("AttendenceApi.Data.Class", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,7 +369,7 @@ namespace AttendenceApi.Migrations
 
             modelBuilder.Entity("AttendenceApi.Data.Schedule", b =>
                 {
-                    b.HasOne("AttendenceApi.Data.Classes", "Class")
+                    b.HasOne("AttendenceApi.Data.Class", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)

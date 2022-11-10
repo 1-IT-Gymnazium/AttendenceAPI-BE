@@ -11,7 +11,7 @@ namespace AttendenceApi.Data
     {
         public Guid Id { get; set; }
         public Guid ClassId { get; set; }
-        public Class Class { get; set; } = null!;
+        public Classes Class { get; set; } = null!;
         public int? StartOfLessonsInMinutes { get; set; }
         public int? EndTimeOfLessonsInMinutes { get; set; }
 

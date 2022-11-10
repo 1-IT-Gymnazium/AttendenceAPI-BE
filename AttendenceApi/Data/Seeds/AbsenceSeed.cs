@@ -8,19 +8,35 @@ namespace AttendenceApi.Data.Seeds
         public static async Task CreateAbsence(UserManager<User> userManager, AppDbContext dbcontext)
         {
             var user = userManager.FindByEmailAsync("Example@Example.com").Result;
-            var absence = new Absence
+
+
+            Absence[] absence =
             {
-                Date = DateTime.UtcNow,
+                new Absence {                Date = DateTime.UtcNow.Date,
                 Excused = false,
                 TimeOfArrival = DateTime.UtcNow,
-                UserId = user.Id
-                
-                
+                UserId = user.Id},
+                new Absence {                Date = DateTime.UtcNow.Date,
+                Excused = true,
+                TimeOfArrival = DateTime.UtcNow,
+                UserId = user.Id},
+                new Absence {                Date = DateTime.UtcNow.Date,
+                Excused = false,
+                TimeOfArrival = DateTime.UtcNow,
+                UserId = user.Id},
+                new Absence {                Date = DateTime.UtcNow.Date,
+                Excused = false,
+                TimeOfArrival = DateTime.UtcNow,
+                UserId = user.Id}
             };
-            var abs = dbcontext.Absences.Where(a => a.UserId == absence.UserId).ToList();
+            var abs = dbcontext.Absences.Where(a => a.UserId == user.Id).ToList();
             if (abs.Count == 0)
             {
-                dbcontext.Absences.Add(absence);
+                for (int i = 0; i < absence.Length; i++)
+                {
+                    dbcontext.Absences.Add(absence[i]);
+                }
+                
                await  dbcontext.SaveChangesAsync();
 
             }

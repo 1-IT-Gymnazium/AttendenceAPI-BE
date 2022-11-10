@@ -14,7 +14,7 @@ namespace AttendenceApi.Data.NewFolder
                 UserName = "User123",
                 Email = "Example@Example.com",
                 InSchool = false,
-                ClassId = AuthController.GuidFromString("3.T")
+                ClassId = AuthController.GuidFromString("1.A")
 
 
 
