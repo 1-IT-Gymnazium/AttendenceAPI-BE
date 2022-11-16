@@ -147,7 +147,7 @@ namespace AttendenceApi.Controllers
 
         [HttpPost("logindb")]
         [AllowAnonymous]
-        public async Task<bool> LoginAsyncc(LoginViewModel model)
+        public async Task<IActionResult> LoginAsyncc(LoginViewModel model)
         {
             if (true)
             {
@@ -161,24 +161,32 @@ namespace AttendenceApi.Controllers
                 }
                 catch (DirectoryServicesCOMException ex)
                 {
-                    return false;
+                    return NotFound();
                 }
 
 
                 var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
-                if (user == null) return false;
+                if (user == null)
+                {
+                    return Ok("UserNotInDb");
+                }
+                    
                 var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
                 await HttpContext.SignInAsync(userPrincipal);
 
-                return true;
+                return Ok("Logged In");
             }
             else
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
-                return result.Succeeded;
+                return BadRequest();
             }
         }
-
+        [HttpPost("Register/NotInDB")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterUser([FromBody])
+        {
+        }
 
 
         private Guid? TryGetUserIdFromContext()
