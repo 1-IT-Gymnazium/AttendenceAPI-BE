@@ -12,7 +12,7 @@ namespace AttendenceApi.Data.NewFolder
             var admin = new User()
             {
                 UserName = "User123",
-                Email = "Example@Example.com",
+                Email = "Example@Example.com",  
                 InSchool = false,
                 ClassId = AuthController.GuidFromString("1.A")
 

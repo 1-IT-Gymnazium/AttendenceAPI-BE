@@ -145,6 +145,30 @@ namespace AttendenceApi.Controllers
             return Ok(result);
         }
 
+        public async Task<IActionResult> AddUserInDB(LoginViewModel model, RegisterVM regModel)
+        {
+            var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
+            var directorySearcher = new DirectorySearcher(directoryEntry);
+            try
+            {
+                var result = directorySearcher.FindAll();
+            }
+            catch (DirectoryServicesCOMException ex)
+            {
+                return NotFound();
+            }
+
+
+            var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
+            if (user == null)
+            {
+                await RegisterUser(regModel);
+            }
+
+
+            return Ok("UserAlreadyInDB");
+        }
+
         [HttpPost("logindb")]
         [AllowAnonymous]
         public async Task<IActionResult> LoginAsyncc(LoginViewModel model)
@@ -161,7 +185,7 @@ namespace AttendenceApi.Controllers
                 }
                 catch (DirectoryServicesCOMException ex)
                 {
-                    return NotFound();
+                    return NotFound(ex);
                 }
 
 
@@ -182,10 +206,23 @@ namespace AttendenceApi.Controllers
                 return BadRequest();
             }
         }
+
+
         [HttpPost("Register/NotInDB")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterUser([FromBody])
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterVM VM)
         {
+            var User = new User
+            {
+                InSchool = false,
+                ClassId = AuthController.GuidFromString(VM.ClassId),
+                PinHash = VM.PinHash,
+
+            };
+           _context.Users.Add(User);
+           await  _context.SaveChangesAsync();
+
+            return Ok();
         }
 
 

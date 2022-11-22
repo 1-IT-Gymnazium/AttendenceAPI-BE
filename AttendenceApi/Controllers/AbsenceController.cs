@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.EntityFrameworkCore;
 using System.DirectoryServices;
 using System.Reflection.PortableExecutable;
@@ -58,12 +58,12 @@ namespace AttendenceApi.Controllers
         public async Task<ActionResult<List<Absence>>> GetSpecificUserAbsence(string userName)
         {
             var user = _context.Users.SingleOrDefault(s => s.UserName == userName);
-            return _context.Absences.Where(s => user.Id == s.UserId).ToList();
+            return  _context.Absences.Where(s => user.Id == s.UserId).ToList();
         }
 
 
 
-        /*
+        
         [HttpPost("Absence/Write")]
         public async Task<ActionResult> AbsenceZapis([FromBody] string Isic)
         {
@@ -74,31 +74,36 @@ namespace AttendenceApi.Controllers
             //gets user based on user id stored in isic
             var User = _context.Users
                 .SingleOrDefault(User => User.Id == isic.UserId);
+            List<Lesson> hours = null;
 
             //gets Altered schedule for current day, if there isnt a different schedule it finds casual everyday schedule
             var schedule = _context.AlteredSchedules.SingleOrDefault(s => s.ClassId == User.ClassId && s.Date == DateTime.Today);
             if (schedule == null)
             {
                 var sched = _context.Schedules.SingleOrDefault(Day => Day.ClassId == User.ClassId && Day.Day == DateTime.Today.ToString());
-                //schedule = new AlteredSchedule { Class = sched.Class}
+                hours = _context.Lessons.Where(s => s.ScheduleId == sched.Id).OrderBy(l => l.LessonIndex).ToList();
+            }
+            else
+            {
+                 hours = _context.Lessons.Where(s => s.ScheduleId == schedule.Id).OrderBy(l => l.LessonIndex).ToList();
+               
             }
 
 
-            // Saves if student is already in school or not
-            //var inSchool = new InSchool { UserId = User.Id };
 
-
-
-
-            if (((int)DateTime.Now.TimeOfDay.TotalMinutes) < 515 && User.InSchool == false) // if user isnt in school and isnt late based on start time of the first hour in students schedule
+            if (User.InSchool)
+            {
+                return Ok("AlreadyInSchool");
+            }
+            if (((int)DateTime.Now.TimeOfDay.TotalMinutes) < (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and isnt late based on start time of the first hour in students schedule
             {
                 //Saves student into in school DB (doesnt write him any absence)
-                User.InSchool == true;
+                User.InSchool = true;
                 _context.Update(User);
                 _context.SaveChanges();
                 return Ok();
             }
-            if (((int)DateTime.Now.TimeOfDay.TotalMinutes) > 515 && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
+            if (((int)DateTime.Now.TimeOfDay.TotalMinutes) > (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
             {
 
                 var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.Now, Excused = false }; //inicializes new absence for the student
@@ -118,10 +123,10 @@ namespace AttendenceApi.Controllers
 
 
 
-
+            return BadRequest();
 
         }
-        */
+        
         [HttpPost("excuse")]
         public async Task<IActionResult> ExcuseAbsence([FromBody] List<AbsenceExcuseVM> content, int pin) //Endpoint for excusing, takes list of dates and reasons and 1 pin code 
         {
