@@ -27,7 +27,8 @@ namespace AttendenceApi.Controllers
         public IActionResult GetTimeTable()
         {
             var user = Request.HttpContext.User;
-            return Ok();
+            var ss = user.Identity.Name;
+            return Ok(user.Identity.Name);
         }
 
         [HttpPost("Get/SpecificTimeTable")]
@@ -81,6 +82,11 @@ namespace AttendenceApi.Controllers
             }
             return Ok();
 
+        }
+
+        public IActionResult GetClassFromSchedule()
+        {
+            return Ok();
         }
 
         private static Guid GuidFromString(string input)

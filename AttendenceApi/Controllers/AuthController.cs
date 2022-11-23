@@ -80,7 +80,7 @@ namespace AttendenceApi.Controllers
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "LOGIN_FAILED");
-                return ValidationProblem(ModelState);
+                return ValidationProblem(ModelState)22;
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!result.Succeeded)
@@ -145,7 +145,10 @@ namespace AttendenceApi.Controllers
             return Ok(result);
         }
 
-        public async Task<IActionResult> AddUserInDB(LoginViewModel model, RegisterVM regModel)
+
+        [AllowAnonymous]
+        [HttpPost("AddUserInDB")]
+        public async Task<IActionResult> AddUserInDB([FromBody] RegisterVM model)
         {
             var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
             var directorySearcher = new DirectorySearcher(directoryEntry);
@@ -155,14 +158,14 @@ namespace AttendenceApi.Controllers
             }
             catch (DirectoryServicesCOMException ex)
             {
-                return NotFound();
+                return NotFound(ex);
             }
 
 
             var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
             if (user == null)
             {
-                await RegisterUser(regModel);
+               await RegisterUser(model);
             }
 
 
@@ -210,20 +213,42 @@ namespace AttendenceApi.Controllers
 
         [HttpPost("Register/NotInDB")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterVM VM)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterVM model)
         {
             var User = new User
             {
+                UserName = model.Name,
+                Email = model.Email,
                 InSchool = false,
-                ClassId = AuthController.GuidFromString(VM.ClassId),
-                PinHash = VM.PinHash,
+                ClassId = AuthController.GuidFromString(model.ClassId),
+                PinHash = model.PinHash,
 
             };
+           
            _context.Users.Add(User);
            await  _context.SaveChangesAsync();
 
+           await _userManager.UpdateSecurityStampAsync(User);
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
+        [HttpPost("UserIsic")]
+        public async Task<IActionResult> UserIsic([FromBody] string Isic)
+        {
+            var user = _context.Users.FirstOrDefaultAsync(s => s.Id == TryGetUserIdFromContext());
+            var userIsic = new Isic
+            {
+                UserId = TryGetUserIdFromContext().Value,
+                IsicId = Isic
+
+            };
+           await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
+
 
 
         private Guid? TryGetUserIdFromContext()

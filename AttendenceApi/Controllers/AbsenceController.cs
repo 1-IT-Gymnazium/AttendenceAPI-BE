@@ -78,6 +78,7 @@ namespace AttendenceApi.Controllers
 
             //gets Altered schedule for current day, if there isnt a different schedule it finds casual everyday schedule
             var schedule = _context.AlteredSchedules.SingleOrDefault(s => s.ClassId == User.ClassId && s.Date == DateTime.Today);
+            
             if (schedule == null)
             {
                 var sched = _context.Schedules.SingleOrDefault(Day => Day.ClassId == User.ClassId && Day.Day == DateTime.Today.ToString());
