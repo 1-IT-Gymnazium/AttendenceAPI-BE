@@ -16,6 +16,7 @@ using AttendenceApi.Services;
 using AttendenceApi.Data;
 using AttendenceApi.Data.Indentity;
 using AttendenceApi.Utils;
+using System;
 
 namespace AttendenceApi.Controllers
 {
@@ -96,7 +97,7 @@ namespace AttendenceApi.Controllers
             {
                 return Ok("AlreadyInSchool");
             }
-            if (((int)DateTime.Now.TimeOfDay.TotalMinutes) < (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and isnt late based on start time of the first hour in students schedule
+            if (((int)DateTime.UtcNow.AddHours(2).TimeOfDay.TotalMinutes) < (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and isnt late based on start time of the first hour in students schedule
             {
                 //Saves student into in school DB (doesnt write him any absence)
                 User.InSchool = true;
@@ -104,7 +105,7 @@ namespace AttendenceApi.Controllers
                 _context.SaveChanges();
                 return Ok();
             }
-            if (((int)DateTime.Now.TimeOfDay.TotalMinutes) > (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
+            if (((int)DateTime.UtcNow.AddHours(2).TimeOfDay.TotalMinutes) > (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
             {
 
                 var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.Now, Excused = false }; //inicializes new absence for the student
@@ -158,7 +159,6 @@ namespace AttendenceApi.Controllers
             {
                 return BadRequest("Bad Request");
             }
-            return BadRequest();
            
            
 

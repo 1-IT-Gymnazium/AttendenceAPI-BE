@@ -12,21 +12,21 @@ namespace AttendenceApi.Data.Seeds
 
             Absence[] absence =
             {
-                new Absence {                Date = DateTime.UtcNow.Date,
+                new Absence {                Date = DateTime.UtcNow.Date.AddHours(1),
                 Excused = false,
-                TimeOfArrival = DateTime.UtcNow,
+                TimeOfArrival = DateTime.UtcNow.AddHours(1),
                 UserId = user.Id},
                 new Absence {                Date = DateTime.UtcNow.Date,
                 Excused = true,
-                TimeOfArrival = DateTime.UtcNow,
+                TimeOfArrival = DateTime.UtcNow.AddHours(1),
                 UserId = user.Id},
                 new Absence {                Date = DateTime.UtcNow.Date,
                 Excused = false,
-                TimeOfArrival = DateTime.UtcNow,
+                TimeOfArrival = DateTime.UtcNow.AddHours(1),
                 UserId = user.Id},
                 new Absence {                Date = DateTime.UtcNow.Date,
                 Excused = false,
-                TimeOfArrival = DateTime.UtcNow,
+                TimeOfArrival = DateTime.UtcNow.AddHours(1),
                 UserId = user.Id}
             };
             var abs = dbcontext.Absences.Where(a => a.UserId == user.Id).ToList();

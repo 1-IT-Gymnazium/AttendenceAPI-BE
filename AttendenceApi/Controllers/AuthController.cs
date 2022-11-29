@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using System.DirectoryServices;
+using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -34,6 +36,7 @@ namespace AttendenceApi.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly Claim _userClaim;
         private readonly Claim _adminClaim;
+     
         public AuthController(IUserService userService, AppDbContext context, ILogger<AuthController> logger, IHttpContextAccessor contextAccessor, UserManager<User> user, SignInManager<User> signInManager)
         {
             _userService = userService;
@@ -44,7 +47,7 @@ namespace AttendenceApi.Controllers
             _signInManager = signInManager;
             _userClaim = new Claim("CLAIM_USER", Claims.USER);
             _adminClaim = new Claim(Claims.SUPERUSER, Claims.SUPERUSER);
-            
+           
         }
 
         [Tags("Authentications")]
@@ -176,8 +179,8 @@ namespace AttendenceApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginAsyncc(LoginViewModel model)
         {
-            if (true)
-            {
+          
+            
 
                 
                  var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
@@ -197,18 +200,28 @@ namespace AttendenceApi.Controllers
                 {
                     return Ok("UserNotInDb");
                 }
+
                     
                 var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
                 await HttpContext.SignInAsync(userPrincipal);
-
-                return Ok("Logged In");
-            }
-            else
+            var claims = await _userManager.GetClaimsAsync(user);
+            var cl = new IdentityUserClaim<Guid> { ClaimType = Claims.USER, ClaimValue = Claims.USER };
+            var nvm = _userClaim;
+            if (claims.Contains(_adminClaim))
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
-                return BadRequest();
+                
+                return Ok("Admin");
             }
-        }
+            if (true)//claims.Contains(nvm)
+            {
+                return Ok("Student");
+            }
+            return NotFound("UserDoesntHaveAClaim");
+            
+   
+            
+               
+        }       
 
 
         [HttpPost("Register/NotInDB")]
@@ -229,6 +242,8 @@ namespace AttendenceApi.Controllers
            await  _context.SaveChangesAsync();
 
            await _userManager.UpdateSecurityStampAsync(User);
+            await _userManager.AddClaimAsync(User, _userClaim);
+            
             await _context.SaveChangesAsync();
 
             return Ok();

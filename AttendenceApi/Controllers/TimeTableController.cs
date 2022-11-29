@@ -4,6 +4,7 @@ using AttendenceApi.Services;
 using AttendenceApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -63,14 +64,15 @@ namespace AttendenceApi.Controllers
                 var sche = new AlteredSchedule();
                 var lessons = new List<Lesson>();
                     sche.EndTimeOfLessonsInMinutes = model[i].EndTimeOfLessonsInMinutes;
-                sche.ClassId = model[i].ClassId;
+                sche.ClassId = GuidFromString(model[i].ClassId);
                 sche.Date = DateTime.Parse(model[i].Date);
                 sche.StartOfLessonsInMinutes = model[i].StartTimeOfLessonsInMinutes;
                 sche.Id = id;
                
                 for (int s = 0; s < model[i].Lessons.Count; s++)
                 {
-                    lessons.Add(new Lesson {EndTimeInMinutes = model[i].Lessons[s].EndTimeInMinutes, LessonIndex = model[i].Lessons[s].LessonIndex, Name = model[i].Lessons[s].Name, TeacherId = _context.Users.SingleOrDefault(x=> x.UserName == model[i].Lessons[s].Teacher).Id, ScheduleId = id, StartTimeInMinutes = model[i].Lessons[s].StartTimeInMinutes });
+                    //var teacher = await _context.Users.SingleOrDefaultAsync(x => x.UserName == model[i].Lessons[s].Teacher);
+                    //lessons.Add(new Lesson {EndTimeInMinutes = model[i].Lessons[s].EndTimeInMinutes, LessonIndex = model[i].Lessons[s].LessonIndex, Name = model[i].Lessons[s].Name, TeacherId = teacher.Id, ScheduleId = id, StartTimeInMinutes = model[i].Lessons[s].StartTimeInMinutes });
 
                 }
                 _context.AlteredSchedules.Add(sche);
