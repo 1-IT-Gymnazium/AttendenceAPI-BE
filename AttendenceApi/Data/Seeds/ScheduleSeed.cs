@@ -6,19 +6,48 @@ namespace AttendenceApi.Data.Seeds
     {
         public static async Task CreateSchedule(AppDbContext dbContext)
         {
-            var schedule = new Schedule
+            Schedule[] schedule =
             {
-                ClassId = AuthController.GuidFromString("1.A"),
+                new Schedule {
+                ClassId = AuthController.GuidFromString("3.T"),
                 Date = "2022-04-20",
                 EndTimeOfLessonsInMinutes = 810,
-                Day = "Monday",
-                
+                Day = "Monday"
+                },
+                                new Schedule {
+                ClassId = AuthController.GuidFromString("3.T"),
+                Date = "2022-04-21",
+                EndTimeOfLessonsInMinutes = 810,
+                Day = "Tuesday"
+                },
+                                                new Schedule {
+                ClassId = AuthController.GuidFromString("3.T"),
+                Date = "2022-04-22",
+                EndTimeOfLessonsInMinutes = 810,
+                Day = "Wednesday"
+                },
+                                                                new Schedule {
+                ClassId = AuthController.GuidFromString("3.T"),
+                Date = "2022-04-23",
+                EndTimeOfLessonsInMinutes = 810,
+                Day = "Thursday"
+                },
+                                                                                new Schedule {
+                ClassId = AuthController.GuidFromString("3.T"),
+                Date = "2022-04-24",
+                EndTimeOfLessonsInMinutes = 810,
+                Day = "Friday"
+                },
 
             };
-           var isindb = dbContext.Schedules.FirstOrDefault(s => s.ClassId == schedule.ClassId && s.Date == "2022-04-20");
+           var isindb = dbContext.Schedules.FirstOrDefault(s => s.ClassId == schedule[0].ClassId && s.Date == "2022-04-20");
             if(isindb == null)
             {
-                await dbContext.Schedules.AddAsync(schedule);
+                for (int i = 0; i < schedule.Length; i++)
+                {
+                    await dbContext.AddAsync(schedule[i]);
+                }
+                
                 await dbContext.SaveChangesAsync();
 
             }

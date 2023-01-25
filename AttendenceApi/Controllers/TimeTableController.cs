@@ -27,9 +27,28 @@ namespace AttendenceApi.Controllers
         [HttpGet("Get/Timetable")]
         public IActionResult GetTimeTable()
         {
-            var user = Request.HttpContext.User;
-            var ss = user.Identity.Name;
-            return Ok(user.Identity.Name);
+           
+            var User = _context.Users.FirstOrDefault(s => s.UserName == Request.HttpContext.User.Identity.Name);
+
+            //gets Altered schedule for current day, if there isnt a different schedule it finds casual everyday schedule
+            var schedule = _context.AlteredSchedules.SingleOrDefault(s => s.ClassId == User.ClassId && s.Date == DateTime.Today);
+           
+            
+            List<Lesson> hours = null;
+            if (schedule == null)
+            {
+                var uzfaktnevim = _context.Schedules;
+                var currentDay = DateTime.UtcNow.DayOfWeek.ToString();
+                var sched = _context.Schedules.First(Day => Day.ClassId == User.ClassId && Day.Day == currentDay);
+                hours = _context.Lessons.Where(s => s.ScheduleId == sched.Id).OrderBy(l => l.LessonIndex).ToList();
+                return Ok(sched);
+            }
+            else
+            {
+                hours = _context.Lessons.Where(s => s.ScheduleId == schedule.Id).OrderBy(l => l.LessonIndex).ToList();
+                return Ok(schedule);
+            }
+            
         }
 
         [HttpPost("Get/SpecificTimeTable")]

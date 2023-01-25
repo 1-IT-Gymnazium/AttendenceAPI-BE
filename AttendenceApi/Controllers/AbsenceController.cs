@@ -62,10 +62,26 @@ namespace AttendenceApi.Controllers
             return  _context.Absences.Where(s => user.Id == s.UserId).ToList();
         }
 
+        [Authorize(Policy = Policies.SUPERADMIN)]
+        [HttpGet("SetAllUsersToNotInSchool")]
+        public async Task<IActionResult> SetUsersToNotInSchool()
+        {
 
+            var users = _context.Users.ToList();
+            for (int i = 0; i < users.Count; i++)
+            {
+                users[i].InSchool = false;
+                _context.Update(users[i]);
+            }
+           
+            _context.SaveChanges();
+
+            return Ok("Users set to not in school");
+        }
 
         
         [HttpPost("Absence/Write")]
+        [AllowAnonymous]
         public async Task<ActionResult> AbsenceZapis([FromBody] string Isic)
         {
             //gets users isic based on isic scanned with RFID
@@ -82,7 +98,9 @@ namespace AttendenceApi.Controllers
             
             if (schedule == null)
             {
-                var sched = _context.Schedules.SingleOrDefault(Day => Day.ClassId == User.ClassId && Day.Day == DateTime.Today.ToString());
+                var uzfaktnevim = _context.Schedules;
+                var currentDay = DateTime.UtcNow.DayOfWeek.ToString();
+                var sched = _context.Schedules.First(Day => Day.ClassId == User.ClassId && Day.Day == currentDay);
                 hours = _context.Lessons.Where(s => s.ScheduleId == sched.Id).OrderBy(l => l.LessonIndex).ToList();
             }
             else
@@ -108,7 +126,7 @@ namespace AttendenceApi.Controllers
             if (((int)DateTime.UtcNow.AddHours(2).TimeOfDay.TotalMinutes) > (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
             {
 
-                var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.Now, Excused = false }; //inicializes new absence for the student
+                var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.UtcNow.AddHours(2), Excused = false }; //inicializes new absence for the student
 
                 _context.Absences.Add(content); // adds absence to DB
 
@@ -141,7 +159,7 @@ namespace AttendenceApi.Controllers
             SHA256 sha256Hash = SHA256.Create();
             string hash = GetHash(sha256Hash, pin);
 
-            if (user.PinHash == hash) // if pin that the user sent matches the pin in database 
+            if (user.PinHash == pin.ToString()) // if pin that the user sent matches the pin in database 
             {
                 for (int i = 0; i < content.Count; i++) // for to iterate through all the sent absences
                 {
