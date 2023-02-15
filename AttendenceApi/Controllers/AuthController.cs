@@ -179,7 +179,7 @@ namespace AttendenceApi.Controllers
 
 
 
-
+            /*
             var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
             var directorySearcher = new DirectorySearcher(directoryEntry);
             try
@@ -190,7 +190,7 @@ namespace AttendenceApi.Controllers
             {
                 return NotFound(ex);
             }
-
+            */
 
             var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
             if (user == null)

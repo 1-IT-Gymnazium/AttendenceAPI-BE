@@ -47,19 +47,161 @@ namespace AttendenceApi.Controllers
         }
 
         [HttpGet("GetUserAbsence")]
-        public async Task<ActionResult<List<Absence>>> GetUserAbsence()
+        public async Task<ActionResult<List<AbsenceIndexVM>>> GetUserAbsence()
         {
-            var user = GetUserPrincipalFromContext();
-            return _context.Absences.Where(s => user.GetUserId() == s.UserId).ToList();
+            var claimsPrincipal = GetUserPrincipalFromContext();
+            var user = _context.Users.FirstOrDefault(s => claimsPrincipal.GetUserId() == s.Id);
+
+            var absenceList = _context.Absences.Where(s => user.Id == s.UserId).ToList();
+            var output = new List<AbsenceIndexVM>();    
+
+            foreach (Absence absence in absenceList)
+            {
+                List<Lesson> hours = null;
+                int? AbsenceArrivalInMinutes = TimeOfDayToMinutes(absence.TimeOfArrival);
+                int? AbsenceExitinMinutes = TimeOfDayToMinutes(absence.TimeOfExit);
+                List<int> MissedHoursIndex = new List<int>();
+                AlteredSchedule? schedule = new AlteredSchedule();
+                //gets Altered schedule for current day, if there isnt a different schedule it finds casual everyday schedule
+                try
+                {
+                    schedule = _context.AlteredSchedules.SingleOrDefault(s => s.ClassId == user.ClassId && s.Date.Date == absence.TimeOfArrival.Value.Date);
+
+                }
+                catch
+                {
+                    schedule = null;
+                }
+
+
+                if (schedule == null)
+                {
+                    
+                    var currentDay = DateTime.UtcNow.DayOfWeek.ToString();
+                    var sched = _context.Schedules.First(Day => Day.ClassId == user.ClassId && Day.Day == currentDay);
+                    hours = _context.Lessons.Where(s => s.ScheduleId == sched.Id).OrderBy(l => l.LessonIndex).ToList();
+                }
+                else
+                {
+                    hours = _context.Lessons.Where(s => s.ScheduleId == schedule.Id).OrderBy(l => l.LessonIndex).ToList();
+
+                }
+
+                for (int i = 0; i < hours.Count; i++) // works but not tested a lot
+                {
+
+
+
+
+                     if (AbsenceArrivalInMinutes == null && AbsenceExitinMinutes <= hours[i].StartTimeInMinutes || AbsenceExitinMinutes <= hours[i].EndTimeInMinutes)
+                    {
+                        MissedHoursIndex.Add(hours[i].LessonIndex); //user absent
+                        continue;
+                    }
+                    else if (AbsenceExitinMinutes == null && AbsenceArrivalInMinutes >= hours[i].EndTimeInMinutes || AbsenceArrivalInMinutes >= hours[i].StartTimeInMinutes)
+                    {
+                        MissedHoursIndex.Add(hours[i].LessonIndex);//user absent
+                        continue;
+                    }
+                    else if (AbsenceArrivalInMinutes >= hours[i].EndTimeInMinutes || AbsenceExitinMinutes <= hours[i].StartTimeInMinutes)
+                    {
+                        MissedHoursIndex.Add(hours[i].LessonIndex);//user absent
+                        continue;
+
+                    }
+                    else
+                    {
+                        //user was present
+                    }
+
+
+
+                }
+                output.Add(new AbsenceIndexVM { Absence = absence, LessonIndexes = MissedHoursIndex });
+            }
+            return output;
         }
 
 
 
         [HttpPost("GetSpecificUser")]
-        public async Task<ActionResult<List<Absence>>> GetSpecificUserAbsence(string userName)
+        public async Task<ActionResult<List<AbsenceIndexVM>>> GetSpecificUserAbsence(string userName)
         {
-            var user = _context.Users.SingleOrDefault(s => s.UserName == userName);
-            return  _context.Absences.Where(s => user.Id == s.UserId).ToList();
+            
+            var user = _context.Users.FirstOrDefault(s => s.NormalizedUserName == userName);
+            if (user == null)
+            {
+                return NotFound("User Not Found"); 
+            }
+
+            var absenceList = _context.Absences.Where(s => user.Id == s.UserId).ToList();
+            var output = new List<AbsenceIndexVM>();
+
+            foreach (Absence absence in absenceList)
+            {
+                List<Lesson> hours = null;
+                int? AbsenceArrivalInMinutes = TimeOfDayToMinutes(absence.TimeOfArrival);
+                int? AbsenceExitinMinutes = TimeOfDayToMinutes(absence.TimeOfExit);
+                List<int> MissedHoursIndex = new List<int>();
+                AlteredSchedule? schedule = new AlteredSchedule();
+                //gets Altered schedule for current day, if there isnt a different schedule it finds casual everyday schedule
+                try
+                {
+                    schedule = _context.AlteredSchedules.SingleOrDefault(s => s.ClassId == user.ClassId && s.Date.Date == absence.TimeOfArrival.Value.Date);
+
+                }
+                catch
+                {
+                    schedule = null;
+                }
+
+
+                if (schedule == null)
+                {
+
+                    var currentDay = DateTime.UtcNow.DayOfWeek.ToString();
+                    var sched = _context.Schedules.First(Day => Day.ClassId == user.ClassId && Day.Day == currentDay);
+                    hours = _context.Lessons.Where(s => s.ScheduleId == sched.Id).OrderBy(l => l.LessonIndex).ToList();
+                }
+                else
+                {
+                    hours = _context.Lessons.Where(s => s.ScheduleId == schedule.Id).OrderBy(l => l.LessonIndex).ToList();
+
+                }
+
+                for (int i = 0; i < hours.Count; i++) // works but not tested a lot
+                {
+
+
+
+
+                    if (AbsenceArrivalInMinutes == null && AbsenceExitinMinutes <= hours[i].StartTimeInMinutes || AbsenceExitinMinutes <= hours[i].EndTimeInMinutes)
+                    {
+                        MissedHoursIndex.Add(hours[i].LessonIndex); //user absent
+                        continue;
+                    }
+                    else if (AbsenceExitinMinutes == null && AbsenceArrivalInMinutes >= hours[i].EndTimeInMinutes || AbsenceArrivalInMinutes >= hours[i].StartTimeInMinutes)
+                    {
+                        MissedHoursIndex.Add(hours[i].LessonIndex);//user absent
+                        continue;
+                    }
+                    else if (AbsenceArrivalInMinutes >= hours[i].EndTimeInMinutes || AbsenceExitinMinutes <= hours[i].StartTimeInMinutes)
+                    {
+                        MissedHoursIndex.Add(hours[i].LessonIndex);//user absent
+                        continue;
+
+                    }
+                    else
+                    {
+                        //user was present
+                    }
+
+
+
+                }
+                output.Add(new AbsenceIndexVM { Absence = absence, LessonIndexes = MissedHoursIndex });
+            }
+            return Ok(output);
         }
 
         [Authorize(Policy = Policies.SUPERADMIN)]
@@ -111,6 +253,7 @@ namespace AttendenceApi.Controllers
 
 
 
+
             if (User.InSchool)
             {
                 return Ok("AlreadyInSchool");
@@ -126,7 +269,7 @@ namespace AttendenceApi.Controllers
             if (((int)DateTime.UtcNow.AddHours(2).TimeOfDay.TotalMinutes) > (hours.First().StartTimeInMinutes + 5) && User.InSchool == false) // if user isnt in school and is late based on start time of the first hour
             {
 
-                var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.UtcNow.AddHours(2), Excused = false }; //inicializes new absence for the student
+                var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.UtcNow.AddHours(2), Excused = false, Date = DateTime.UtcNow.AddHours(2).Date }; //inicializes new absence for the student
 
                 _context.Absences.Add(content); // adds absence to DB
 
@@ -184,6 +327,7 @@ namespace AttendenceApi.Controllers
         }
 
 
+
         private ClaimsPrincipal GetUserPrincipalFromContext()
         {
             var user = _signInManager.Context.User;
@@ -210,6 +354,14 @@ namespace AttendenceApi.Controllers
 
             // Return the hexadecimal string.
             return sBuilder.ToString();
+        }
+        public static int? TimeOfDayToMinutes(DateTime? dateTime)
+        {
+            if (dateTime == null)
+            {
+                return null;
+            }
+            return dateTime.Value.Hour * 60 + dateTime.Value.Minute;
         }
     }
 }
