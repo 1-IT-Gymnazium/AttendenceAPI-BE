@@ -50,7 +50,7 @@ namespace AttendenceApi.Controllers
         [HttpGet("UserInfo")]
         public async Task<ActionResult<LoggedUserVm>> GetUserInfo()
         {
-
+            
             var principal = GetUserPrincipalFromContext();
 
             if (!principal.Identities.Any(x => x.IsAuthenticated))
@@ -69,49 +69,7 @@ namespace AttendenceApi.Controllers
             });
         }
 
-        /*
-        [Tags("Authentications")]
-        [AllowAnonymous]
-        [HttpPost("Authenticate")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel model)
-        {
-            var user = await _userManager.FindByNameAsync(model.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError(string.Empty, "LOGIN_FAILED");
-                return ValidationProblem(ModelState)22;
-            }
-            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError(string.Empty, "LOGIN_FAILED");
-                return ValidationProblem(ModelState);
-            }
-
-            var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
-
-            await HttpContext.SignInAsync(userPrincipal);
-            var claims = await _userManager.GetClaimsAsync(user);
-
-            
-            if (claims[0].Value == _userClaim.Value)
-            {
-                return Ok("Student");
-            }
-            if (_userManager.GetClaimsAsync(user).Result.Contains(_adminClaim))
-            {
-                return Ok("Admin");
-            }
-            if (_userManager.GetClaimsAsync(user) == null)
-            {
-                return BadRequest("TooBad");
-            }
-
-
-
-            return BadRequest();
-
-        } */
+    
 
         [AllowAnonymous]
         [HttpPost("CreateUser")]

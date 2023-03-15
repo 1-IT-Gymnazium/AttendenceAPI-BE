@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "apis1": {
+      "type": "apis"
+    },
+    "secrets1": {
+      "type": "secrets"
+    },
+    "postgresql1": {
+      "type": "postgresql",
+      "connectionId": "ConnectionStrings:DefaultConnection",
+      "dynamicId": null
+    }
+  }
+}

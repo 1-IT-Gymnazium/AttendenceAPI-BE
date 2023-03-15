@@ -1652,3 +1652,9 @@ C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\obj\Debug\net6.0\r
 C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\obj\Debug\net6.0\AttendenceApi.pdb
 C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\obj\Debug\net6.0\AttendenceApi.genruntimeconfig.cache
 C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\obj\Debug\net6.0\ref\AttendenceApi.dll
+C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\bin\Debug\net6.0\Amazon.Lambda.APIGatewayEvents.dll
+C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\bin\Debug\net6.0\Amazon.Lambda.ApplicationLoadBalancerEvents.dll
+C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\bin\Debug\net6.0\Amazon.Lambda.AspNetCoreServer.dll
+C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\bin\Debug\net6.0\Amazon.Lambda.Core.dll
+C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\bin\Debug\net6.0\Amazon.Lambda.Logging.AspNetCore.dll
+C:\Users\jjiri\source\repos\attendencyprojectv2\AttendenceApi\bin\Debug\net6.0\Amazon.Lambda.Serialization.SystemTextJson.dll

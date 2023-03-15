@@ -1,9 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "KoXnXJf5/EC9I7hYuo25u+zXCiNie4gB9eISicQiRRxDaW2WLhuDzniUhZRkVv6AcrfBN1C/nc83wcvrpSDvZg==",
+  "dgSpecHash": "+JjOsrh1jdrsK87/JEdjRbE1z3qHnFsU8K8RLRhxLt98s9zblsgktbzn9e150koBvxDZV6tpxIRel3Hl5z6fCw==",
   "success": true,
   "projectFilePath": "C:\\Users\\jjiri\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.6.0\\amazon.lambda.apigatewayevents.2.6.0.nupkg.sha512",
+    "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.applicationloadbalancerevents\\2.1.0\\amazon.lambda.applicationloadbalancerevents.2.1.0.nupkg.sha512",
+    "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.aspnetcoreserver\\8.0.0\\amazon.lambda.aspnetcoreserver.8.0.0.nupkg.sha512",
+    "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.core\\2.1.0\\amazon.lambda.core.2.1.0.nupkg.sha512",
+    "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.logging.aspnetcore\\3.1.0\\amazon.lambda.logging.aspnetcore.3.1.0.nupkg.sha512",
+    "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.serialization.systemtextjson\\2.3.1\\amazon.lambda.serialization.systemtextjson.2.3.1.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",

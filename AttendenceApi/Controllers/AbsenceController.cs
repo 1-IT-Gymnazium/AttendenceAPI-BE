@@ -1,22 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AttendenceApi.ViewModels;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-
-using Microsoft.EntityFrameworkCore;
-using System.DirectoryServices;
-using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using DirectoryEntry = System.DirectoryServices.DirectoryEntry;
 using AttendenceApi.Services;
 using AttendenceApi.Data;
 using AttendenceApi.Data.Indentity;
 using AttendenceApi.Utils;
-using System;
 
 namespace AttendenceApi.Controllers
 {
@@ -123,7 +115,7 @@ namespace AttendenceApi.Controllers
         }
 
 
-
+        [Authorize(Policy = Policies.SUPERADMIN)]
         [HttpPost("GetSpecificUser")]
         public async Task<ActionResult<List<AbsenceIndexVM>>> GetSpecificUserAbsence(string userName)
         {
@@ -219,6 +211,14 @@ namespace AttendenceApi.Controllers
             _context.SaveChanges();
 
             return Ok("Users set to not in school");
+        }
+
+
+        [HttpGet("random")]
+        [AllowAnonymous]
+        public IActionResult nvm()
+        {
+            return Ok();
         }
 
         
@@ -324,6 +324,63 @@ namespace AttendenceApi.Controllers
            
 
 
+        }
+
+        [AllowAnonymous]
+        [HttpPost("/writeAbsence2")]
+        public async Task<IActionResult> AbsenceWrite([FromBody] string Isic) //Used to write absences without all the fancy fuzzy stuff
+        {
+            var isic = _context.Isics
+                .SingleOrDefault(s => s.IsicId == Isic);
+
+            //gets user based on user id stored in isic
+            var User = _context.Users
+                .SingleOrDefault(User => User.Id == isic.UserId);
+            if (User.InSchool == false)
+            {
+                var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.UtcNow.AddHours(2), Excused = false, Date = DateTime.UtcNow.AddHours(2).Date,Reason = "Came" };
+                _context.Absences.Add(content);
+                User.InSchool = true;
+                _context.SaveChangesAsync();
+
+                return Ok("Welcome");
+            }
+            if (User.InSchool == true)
+            {
+                var content = new Absence { UserId = isic.UserId, TimeOfArrival = DateTime.UtcNow.AddHours(2), Excused = false, Date = DateTime.UtcNow.AddHours(2).Date, Reason = "Left" };
+                _context.Absences.Add(content);
+                User.InSchool= false;
+                _context.SaveChangesAsync();
+                return Ok("Goodbye");
+            }
+            return BadRequest();
+
+
+        }
+        [HttpGet("Absences/Get")]
+        public async Task<IActionResult> GetAbsences()
+        {
+            var user = _context.Users.SingleOrDefault(s => s.Id == GetUserPrincipalFromContext().GetUserId());
+            var absences = _context.Absences.Where(s => s.UserId == user.Id).OrderBy(s=> s.TimeOfArrival).ToList();
+            var output = new List<GetAbsenceVM>();
+            for (int i = 0; i < absences.Count; i += 2)
+            {
+                if (i + 2 > absences.Count)
+                {
+                    output.Add(new GetAbsenceVM { arrival = absences[absences.Count - 1].TimeOfArrival, exit = null });
+                    break;
+                }
+                if (absences[i].Date == absences[i + 1].Date)
+                {
+                    output.Add(new GetAbsenceVM { arrival = absences[i].TimeOfArrival, exit = absences[i + 1].TimeOfArrival });
+                }
+                else
+                {
+                    output.Add(new GetAbsenceVM { arrival = absences[i].TimeOfArrival, exit = null });
+                }
+            }
+
+            return Ok(output);
         }
 
 

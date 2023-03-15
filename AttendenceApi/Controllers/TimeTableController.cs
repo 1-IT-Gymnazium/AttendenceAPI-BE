@@ -70,7 +70,7 @@ namespace AttendenceApi.Controllers
             return Ok(output); 
         }
         [AllowAnonymous]
-        [HttpPost("Create/TimeTable")]
+        [HttpPost("Create/x x")]
         public IActionResult CreateTimeTable([FromBody] List<CreateScheduleVM> model)
         {
           
