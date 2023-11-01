@@ -93,6 +93,20 @@ namespace AttendenceApi.Migrations
                     b.ToTable("Classes");
                 });
 
+            modelBuilder.Entity("AttendenceApi.Data.Classroom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Classrooms");
+                });
+
             modelBuilder.Entity("AttendenceApi.Data.Indentity.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -116,8 +130,14 @@ namespace AttendenceApi.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
                     b.Property<bool>("InSchool")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -204,8 +224,8 @@ namespace AttendenceApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Room")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("RoomId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uuid");
@@ -217,6 +237,8 @@ namespace AttendenceApi.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("ScheduleId");
 
@@ -250,6 +272,42 @@ namespace AttendenceApi.Migrations
                     b.HasIndex("ClassId");
 
                     b.ToTable("Schedules");
+                });
+
+            modelBuilder.Entity("AttendenceApi.Data.StudentSubject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("StudentSubjects");
+                });
+
+            modelBuilder.Entity("AttendenceApi.Data.Subject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -351,6 +409,10 @@ namespace AttendenceApi.Migrations
 
             modelBuilder.Entity("AttendenceApi.Data.Lesson", b =>
                 {
+                    b.HasOne("AttendenceApi.Data.Classroom", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId");
+
                     b.HasOne("AttendenceApi.Data.Schedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleId")
@@ -362,6 +424,8 @@ namespace AttendenceApi.Migrations
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Room");
 
                     b.Navigation("Schedule");
 
@@ -377,6 +441,25 @@ namespace AttendenceApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Class");
+                });
+
+            modelBuilder.Entity("AttendenceApi.Data.StudentSubject", b =>
+                {
+                    b.HasOne("AttendenceApi.Data.Indentity.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AttendenceApi.Data.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>

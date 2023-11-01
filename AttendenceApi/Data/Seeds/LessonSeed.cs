@@ -3,7 +3,8 @@
 namespace AttendenceApi.Data.Seeds
 {
     public class LessonSeed
-    {
+    { 
+        /*
         public static async Task CreateLessons(AppDbContext dbContext)
         {
             var v = dbContext.Schedules.Where(s=> s.ClassId == AuthController.GuidFromString("3.T")).ToArray();
@@ -54,6 +55,6 @@ namespace AttendenceApi.Data.Seeds
 
             }
 
-        }
+        }*/
     }
 }

@@ -15,6 +15,9 @@ namespace AttendenceApi.Data
         public DbSet<Isic> Isics { get; set; }  =null!;
         public DbSet<Schedule> Schedules { get; set; } = null!;
         public DbSet<Lesson> Lessons { get; set; } = null!;
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Classroom> Classrooms { get; set; }
+        public DbSet<StudentSubject> StudentSubjects { get; set; }  
         
 
 

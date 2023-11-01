@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -48,6 +49,7 @@ builder.Services
         options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        
         options.Events = new CookieAuthenticationEvents
         {
             OnRedirectToLogin = redirectContext =>
@@ -83,6 +85,7 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     builder.AllowAnyOrigin();
     builder.AllowAnyMethod();
     builder.AllowAnyHeader();
+    
 }));
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -115,6 +118,6 @@ await UserSeed.CreateAdmin(userManager, dbContext);
 await AbsenceSeed.CreateAbsence(userManager, dbContext);
 await ClassSeed.CreateClass(dbContext);
 await ScheduleSeed.CreateSchedule(dbContext);
-await LessonSeed.CreateLessons(dbContext);
+//await LessonSeed.CreateLessons(dbContext);
 
 app.Run();

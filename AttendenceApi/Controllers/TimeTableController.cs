@@ -24,7 +24,7 @@ namespace AttendenceApi.Controllers
 
 
         [Authorize]
-        [HttpGet("Get/Timetable")]
+        [HttpGet("Get/Timetable")] //TODO: Send all days at once
         public IActionResult GetTimeTable()
         {
            
@@ -37,8 +37,21 @@ namespace AttendenceApi.Controllers
             List<Lesson> hours = null;
             if (schedule == null)
             {
+                var today = DateTime.Now.Date; // This can be any date.
+
+                var day = (int)today.DayOfWeek; //Number of the day in week. (0 - Sunday, 1 - Monday... and so On)
+                var alldays = new List<DateTime>();
+
+
+
+
+                for (var i = -day + 1; i < -day + 6; i++)
+                {
+                  alldays.Add(today.AddDays(i).Date);
+                }
                 var uzfaktnevim = _context.Schedules;
                 var currentDay = DateTime.UtcNow.DayOfWeek.ToString();
+                
                 var sched = _context.Schedules.First(Day => Day.ClassId == User.ClassId && Day.Day == currentDay);
                 hours = _context.Lessons.Where(s => s.ScheduleId == sched.Id).OrderBy(l => l.LessonIndex).ToList();
                 return Ok(sched);

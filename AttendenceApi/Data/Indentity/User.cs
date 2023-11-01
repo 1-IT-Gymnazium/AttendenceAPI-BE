@@ -10,7 +10,8 @@ namespace AttendenceApi.Data.Indentity
         public Guid? ClassId { get; set; }
       public bool InSchool { get; set; }
         public string PinHash { get; set; } = string.Empty;
-
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         public static class Entry
         {
             public const string ClaimTypeSuperUser = "CLAIM_SU";

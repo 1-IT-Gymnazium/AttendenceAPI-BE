@@ -214,7 +214,6 @@ namespace AttendenceApi.Controllers
         }
 
 
-
         
         [HttpPost("Absence/Write")]
         [AllowAnonymous]
@@ -320,8 +319,9 @@ namespace AttendenceApi.Controllers
 
         }
 
-        [AllowAnonymous]
+        
         [HttpPost("/writeAbsence2")]
+        [AllowAnonymous]
         public async Task<IActionResult> AbsenceWrite([FromBody] string Isic) //Used to write absences without all the fancy fuzzy stuff
         {
             var isic = _context.Isics
@@ -351,6 +351,27 @@ namespace AttendenceApi.Controllers
 
 
         }
+
+        [HttpGet("SetIfUserInSchoolByTeacher")]
+        [Authorize(Policy = Policies.SUPERADMIN)]
+        public async Task<IActionResult> SetIfUserInSchoolByTeacher([FromBody] string username) //used for teachers if student forgot isic
+        {
+            
+            var user = _context.Users.First(s => s.UserName == username);
+            if (user == null)
+            {
+                _logger.LogError($"User {username} not found");
+            }
+            user.InSchool = !user.InSchool;
+            _context.Update(user); 
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"User {GetUserPrincipalFromContext().Identity.Name} changed InSchool of user {username}");
+            return Ok("User In School changed to "+ user.InSchool);
+        }
+
+
+
+
         [HttpGet("Absences/Get")]
         public async Task<IActionResult> GetAbsences()
         {

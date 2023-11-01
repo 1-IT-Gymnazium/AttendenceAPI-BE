@@ -71,20 +71,7 @@ namespace AttendenceApi.Controllers
 
     
 
-        [AllowAnonymous]
-        [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateVM model)
-        {
-
-            var classId = GuidFromString(model.ClassId.ToUpper());
-            var user = new User { ClassId = classId, Email = model.Email, InSchool = false, UserName = model.UserName };
-
-            var result = await _userService.CreateUser(user, model.Password);
-
-            await _userManager.AddClaimAsync(user, _userClaim);
-            return Ok(result);
-
-        }
+ 
 
 
 
@@ -103,32 +90,6 @@ namespace AttendenceApi.Controllers
         }
 
 
-        [AllowAnonymous]
-        [HttpPost("AddUserInDB")]
-        public async Task<IActionResult> AddUserInDB([FromBody] RegisterVM model)
-        {
-            
-            var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
-            var directorySearcher = new DirectorySearcher(directoryEntry);
-            try
-            {
-                var result = directorySearcher.FindAll();
-            }
-            catch (DirectoryServicesCOMException ex)
-            {
-                return NotFound(ex);
-            }
-            
-
-            var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
-            if (user == null)
-            {
-                await RegisterUser(model);
-            }
-
-
-            return Ok("UserAlreadyInDB");
-        }
 
         [HttpPost("logindb")]
         [AllowAnonymous]
@@ -153,7 +114,7 @@ namespace AttendenceApi.Controllers
             var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
             if (user == null)
             {
-                return Ok("UserNotInDb");
+                return Ok("UserNotInDb"); // dont change
             }
             
 
@@ -192,6 +153,8 @@ namespace AttendenceApi.Controllers
                 InSchool = false,
                 ClassId = AuthController.GuidFromString(model.ClassId),
                 PinHash = model.PinHash,
+                FirstName= model.FirstName,
+                LastName    = model.LastName,
 
             };
 

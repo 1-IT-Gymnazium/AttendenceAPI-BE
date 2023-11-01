@@ -14,7 +14,8 @@ namespace AttendenceApi.Data
         public int LessonIndex { get; set; }
         public int? StartTimeInMinutes { get; set; }
         public int? EndTimeInMinutes { get; set; }
-        public string? Room { get; set; }
+        public Guid? RoomId { get; set; }
+        public Classroom Room { get; set; }
 
 
     }
