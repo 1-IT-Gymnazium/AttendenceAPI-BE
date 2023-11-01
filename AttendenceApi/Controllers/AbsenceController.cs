@@ -214,12 +214,6 @@ namespace AttendenceApi.Controllers
         }
 
 
-        [HttpGet("random")]
-        [AllowAnonymous]
-        public IActionResult nvm()
-        {
-            return Ok();
-        }
 
         
         [HttpPost("Absence/Write")]
