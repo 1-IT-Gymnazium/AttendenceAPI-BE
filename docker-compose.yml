@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  attendenceapi:
+    image: ${DOCKER_REGISTRY-}attendenceapi
+    build:
+      context: .
+      dockerfile: AttendenceApi/Dockerfile

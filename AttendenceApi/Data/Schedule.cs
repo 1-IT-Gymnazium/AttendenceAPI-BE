@@ -14,8 +14,8 @@ namespace AttendenceApi.Data
         public Classes Class { get; set; } = null!;
         public string Day { get; set; } = null!;
         public string Date { get; set; } = null!;
-
-       
+        
+        public int? StartTimeOfLessonsInMinutes { get; set; }
         public int? EndTimeOfLessonsInMinutes { get; set; }
        
     }

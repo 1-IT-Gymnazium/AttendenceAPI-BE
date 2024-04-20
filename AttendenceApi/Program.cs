@@ -49,6 +49,7 @@ builder.Services
         options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.ExpireTimeSpan = TimeSpan.FromHours(12);
         
         options.Events = new CookieAuthenticationEvents
         {
@@ -78,6 +79,12 @@ builder.Services
             policy.RequireAuthenticatedUser();
             policy.AddRequirements(new ProjectAdminRequirement());
         });
+        config.AddPolicy(Policies.TEACHER, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.RequireClaim(Claims.TEACHER);
+        });
+
     });
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -105,7 +112,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -114,10 +121,13 @@ app.MapControllers();
 using var scope = app.Services.CreateScope();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-await UserSeed.CreateAdmin(userManager, dbContext);
-await AbsenceSeed.CreateAbsence(userManager, dbContext);
-await ClassSeed.CreateClass(dbContext);
-await ScheduleSeed.CreateSchedule(dbContext);
+
+//await UserSeed.CreateAdmin(userManager, dbContext);
+//await ClassSeed.CreateClass(dbContext);
+//await AbsenceSeed.CreateAbsence(userManager, dbContext);
+//await ClaimSeed.UserClaim(dbContext);
+
+//await ScheduleSeed.CreateSchedule(dbContext);
 //await LessonSeed.CreateLessons(dbContext);
 
 app.Run();

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+JjOsrh1jdrsK87/JEdjRbE1z3qHnFsU8K8RLRhxLt98s9zblsgktbzn9e150koBvxDZV6tpxIRel3Hl5z6fCw==",
+  "dgSpecHash": "sfLLMwb7PX4q6QPwweJdYk3LExt2qQ2ietN1NBimspmh/I2ZN9oq9NBC4J3c4zEkj0dn95ouOQ5xIIzpl5mrTA==",
   "success": true,
   "projectFilePath": "C:\\Users\\jjiri\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
   "expectedPackageFiles": [
@@ -74,6 +74,7 @@
     "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.netcore.targets\\1.1.3\\microsoft.netcore.targets.1.1.3.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.17.0\\microsoft.visualstudio.azure.containers.tools.targets.1.17.0.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.visualstudio.debugger.contracts\\17.2.0\\microsoft.visualstudio.debugger.contracts.17.2.0.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration\\6.0.3\\microsoft.visualstudio.web.codegeneration.6.0.3.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.core\\6.0.3\\microsoft.visualstudio.web.codegeneration.core.6.0.3.nupkg.sha512",

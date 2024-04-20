@@ -7,26 +7,26 @@ namespace AttendenceApi.Data.Seeds
     {
         public static async Task CreateAbsence(UserManager<User> userManager, AppDbContext dbcontext)
         {
-            var user = userManager.FindByEmailAsync("Example@Example.com").Result;
+            var user = userManager.FindByNameAsync("User123").Result;
 
 
             Absence[] absence =
             {
-                new Absence {                Date = DateTime.UtcNow.Date.AddHours(1),
+                new Absence {                Date = DateTime.Parse("2024-01-08").ToUniversalTime(),
                 Excused = false,
-                TimeOfArrival = DateTime.UtcNow.AddHours(1),
+                TimeOfArrival = DateTime.Parse("2024-01-08 9:44:33.79807+00").ToUniversalTime(),
                 UserId = user.Id},
-                new Absence {                Date = DateTime.UtcNow.Date,
+                new Absence {                Date = DateTime.Parse("2023-01-09").ToUniversalTime(),
                 Excused = true,
-                TimeOfArrival = DateTime.UtcNow.AddHours(1),
+                TimeOfArrival = DateTime.Parse("2024-01-09 11:44:33.79807+00").ToUniversalTime(),
                 UserId = user.Id},
-                new Absence {                Date = DateTime.UtcNow.Date,
+                new Absence {                Date = DateTime.Parse("2023-01-10").ToUniversalTime(),
                 Excused = false,
-                TimeOfArrival = DateTime.UtcNow.AddHours(1),
+                TimeOfArrival = DateTime.Parse("2024-01-10 12:44:43.74236+00").ToUniversalTime(),
                 UserId = user.Id},
-                new Absence {                Date = DateTime.UtcNow.Date,
+                new Absence {                Date = DateTime.Parse("2024-01-11").ToUniversalTime(),
                 Excused = false,
-                TimeOfArrival = DateTime.UtcNow.AddHours(1),
+                TimeOfArrival = DateTime.Parse("2024-01-11 8:44:33.79807+00").ToUniversalTime(),
                 UserId = user.Id}
             };
             var abs = dbcontext.Absences.Where(a => a.UserId == user.Id).ToList();

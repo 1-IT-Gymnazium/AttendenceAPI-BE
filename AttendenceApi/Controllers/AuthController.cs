@@ -46,6 +46,8 @@ namespace AttendenceApi.Controllers
 
         }
 
+ 
+
         [Tags("Authentications")]
         [HttpGet("UserInfo")]
         public async Task<ActionResult<LoggedUserVm>> GetUserInfo()
@@ -67,18 +69,23 @@ namespace AttendenceApi.Controllers
                 UserName = user.UserName,
                 IsAuthenticated = true,
             });
-        }
+        } // get user info from context
 
+        [HttpGet("Logout")]
+        public async Task<IActionResult> LogOut() // uses sign in manager to logout
+        {
+           
+            await _signInManager.SignOutAsync();
+            return Ok("User successfully signed out");
+        }
     
 
- 
 
-
-
-        [Authorize(Policy = Policies.SUPERADMIN)]
+        
         [Tags("Authentications")]
         [HttpPost("AddUserAdminClaim")]
-        public async Task<IActionResult> AddUserAdminClaim([FromBody] LoggedUserVm UserToAdd)
+        [Authorize(Policy = Policies.SUPERADMIN)]
+        public async Task<IActionResult> AddUserAdminClaim([FromBody] LoggedUserVm UserToAdd) //adding admin claim to user
         {
             var user = await _context.Users.FirstOrDefaultAsync(s => s.UserName == UserToAdd.UserName);
             if (user == null)
@@ -95,10 +102,9 @@ namespace AttendenceApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginAsyncc(LoginViewModel model)
         {
-
-
-
+            // Attempt to connect to LDAP with provided credentials
             /*
+            _logger.LogInformation($"Attempting LDAP authentication for user {model.Name}");
             var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
             var directorySearcher = new DirectorySearcher(directoryEntry);
             try
@@ -107,82 +113,80 @@ namespace AttendenceApi.Controllers
             }
             catch (DirectoryServicesCOMException ex)
             {
-                return NotFound(ex);
-            }
-            */
+                _logger.LogWarning($"LDAP authentication failed for user {model.Name}: {ex}");
+                return NotFound("User or password wrong");
+            }*/
 
+            // Check if the user exists in the local database
+            _logger.LogInformation($"Checking local database for user {model.Name}");
             var user = _context.Users.SingleOrDefault(x => x.UserName == model.Name);
             if (user == null)
             {
-                return Ok("UserNotInDb"); // dont change
+                _logger.LogInformation($"User {model.Name} was not found in the database");
+                return Ok("UserNotInDb");
             }
-            
 
+            // Create a principal for the user and sign them in
+            _logger.LogInformation($"Signing in user {model.Name}");
             var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
             await HttpContext.SignInAsync(userPrincipal);
-            var claims = await _userManager.GetClaimsAsync(user);
-            var cl = new IdentityUserClaim<Guid> { ClaimType = Claims.USER, ClaimValue = Claims.USER };
-            var nvm = _userClaim;
 
-            
+            // Retrieve user claims to determine role
+            var claims = await _userManager.GetClaimsAsync(user);
             if (claims.Any(x => x.Type == _adminClaim.Type))
             {
-
+                _logger.LogInformation($"Admin user {model.Name} logged in successfully");
                 return Ok("Admin");
             }
-            if (claims.Any(x => x.Type == nvm.Type))
+            if (claims.Any(x => x.Type == Claims.TEACHER))
             {
+                _logger.LogInformation($"Teacher user {model.Name} logged in successfully");
+                return Ok("Teacher");
+            }
+            if (claims.Any(x => x.Type == _userClaim.Type))
+            {
+                _logger.LogInformation($"Student user {model.Name} logged in successfully");
                 return Ok("Student");
             }
+
+            // Handle case where no relevant claims were found
+            _logger.LogWarning("User {UserName} does not have the required claims", model.Name);
             return NotFound("UserDoesntHaveAClaim");
 
 
-
-
         }
 
-
-        [HttpPost("Register/NotInDB")]
-        [AllowAnonymous]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterVM model)
-        {
-            var User = new User
-            {
-                UserName = model.Name,
-                Email = model.Email,
-                InSchool = false,
-                ClassId = AuthController.GuidFromString(model.ClassId),
-                PinHash = model.PinHash,
-                FirstName= model.FirstName,
-                LastName    = model.LastName,
-
-            };
-
-            _context.Users.Add(User);
-            await _context.SaveChangesAsync();
-
-            await _userManager.UpdateSecurityStampAsync(User);
-            await _userManager.AddClaimAsync(User, _userClaim);
-
-            await _context.SaveChangesAsync();
-
-            return Ok();
-        }
         
         [HttpPost("UserIsic")]
-        [Authorize(Policy = Policies.SUPERADMIN)]
+        [Authorize(Policy = Policies.TEACHER)]
         public async Task<IActionResult> UserIsic([FromBody] string Isic)
         {
+            // Attempt to retrieve user ID from the current context
+            _logger.LogInformation("Attempting to retrieve user ID from context for ISIC registration.");
+            var userId = TryGetUserIdFromContext();
+            if (!userId.HasValue)
+            {
+                _logger.LogWarning("Failed to retrieve user ID from context.");
+                return BadRequest("User ID is required.");
+            }
 
+            // Log the creation of a new ISIC record
+            _logger.LogInformation($"Creating new ISIC record for user ID {userId.Value} with ISIC ID {Isic}.");
             var userIsic = new Isic
             {
-                UserId = TryGetUserIdFromContext().Value,
+                UserId = userId.Value,
                 IsicId = Isic
-
             };
-            _context.Isics.Add(userIsic);
-            await _context.SaveChangesAsync();
 
+            // Add the new ISIC record to the database
+            _context.Isics.Add(userIsic);
+            _logger.LogDebug("New ISIC record added to context.");
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Changes saved to the database successfully.");
+
+            // Return a success response
             return Ok();
 
         }

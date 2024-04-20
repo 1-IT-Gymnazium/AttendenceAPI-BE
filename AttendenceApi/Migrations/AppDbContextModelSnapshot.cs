@@ -93,20 +93,6 @@ namespace AttendenceApi.Migrations
                     b.ToTable("Classes");
                 });
 
-            modelBuilder.Entity("AttendenceApi.Data.Classroom", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("RoomNumber")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Classrooms");
-                });
-
             modelBuilder.Entity("AttendenceApi.Data.Indentity.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -153,6 +139,10 @@ namespace AttendenceApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("ParentPin")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -161,10 +151,6 @@ namespace AttendenceApi.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("PinHash")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -214,6 +200,9 @@ namespace AttendenceApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AlteredScheduleId")
+                        .HasColumnType("uuid");
+
                     b.Property<int?>("EndTimeInMinutes")
                         .HasColumnType("integer");
 
@@ -224,10 +213,14 @@ namespace AttendenceApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("RoomId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Parity")
+                        .HasColumnType("text");
 
-                    b.Property<Guid>("ScheduleId")
+                    b.Property<string>("Room")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uuid");
 
                     b.Property<int?>("StartTimeInMinutes")
@@ -238,7 +231,7 @@ namespace AttendenceApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("AlteredScheduleId");
 
                     b.HasIndex("ScheduleId");
 
@@ -265,6 +258,9 @@ namespace AttendenceApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<int?>("EndTimeOfLessonsInMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("StartTimeOfLessonsInMinutes")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -409,15 +405,13 @@ namespace AttendenceApi.Migrations
 
             modelBuilder.Entity("AttendenceApi.Data.Lesson", b =>
                 {
-                    b.HasOne("AttendenceApi.Data.Classroom", "Room")
+                    b.HasOne("AttendenceApi.Data.AlteredSchedule", "AlteredSchedule")
                         .WithMany()
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("AlteredScheduleId");
 
                     b.HasOne("AttendenceApi.Data.Schedule", "Schedule")
                         .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScheduleId");
 
                     b.HasOne("AttendenceApi.Data.Indentity.User", "Teacher")
                         .WithMany()
@@ -425,7 +419,7 @@ namespace AttendenceApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Room");
+                    b.Navigation("AlteredSchedule");
 
                     b.Navigation("Schedule");
 

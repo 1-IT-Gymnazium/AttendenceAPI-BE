@@ -26,24 +26,7 @@ public class CompanyAdminRequirementHandler : AuthorizationHandler<ProjectAdminR
                 context.Succeed(requirement);
             }
         }
-        /*else
-        {
-            switch (context.Resource)
-            {
-                case Project project:
-                    {
-                        var projectIdAsString = company.Id.ToString().ToLowerInvariant();
-                        if (context.User.HasClaim(x => x.Type == Claims.PROJECT_ADMIN && x.Value == projectIdAsString))
-                        {
-                            context.Succeed(requirement);
-                            return Task.CompletedTask;
-                        }
-                    }
-                    break;
-                default:
-                    throw new Exception("unknown resource type for access control");
-            }
-        }*/
+       
         return Task.CompletedTask;
     }
 }

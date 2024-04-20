@@ -9,7 +9,7 @@ namespace AttendenceApi.Data.Indentity
         public ICollection<IdentityUserClaim<Guid>> Claims { get; } = new HashSet<IdentityUserClaim<Guid>>();
         public Guid? ClassId { get; set; }
       public bool InSchool { get; set; }
-        public string PinHash { get; set; } = string.Empty;
+        public string ParentPin { get; set; } = string.Empty;
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public static class Entry

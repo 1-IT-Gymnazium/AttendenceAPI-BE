@@ -9,31 +9,31 @@ namespace AttendenceApi.Data.Seeds
             Schedule[] schedule =
             {
                 new Schedule {
-                ClassId = AuthController.GuidFromString("3.T"),
+                ClassId = AuthController.GuidFromString("4.T"),
                 Date = "2022-04-20",
                 EndTimeOfLessonsInMinutes = 810,
                 Day = "Monday"
                 },
                                 new Schedule {
-                ClassId = AuthController.GuidFromString("3.T"),
+                ClassId = AuthController.GuidFromString("4.T"),
                 Date = "2022-04-21",
                 EndTimeOfLessonsInMinutes = 810,
                 Day = "Tuesday"
                 },
                                                 new Schedule {
-                ClassId = AuthController.GuidFromString("3.T"),
+                ClassId = AuthController.GuidFromString("4.T"),
                 Date = "2022-04-22",
                 EndTimeOfLessonsInMinutes = 810,
                 Day = "Wednesday"
                 },
                                                                 new Schedule {
-                ClassId = AuthController.GuidFromString("3.T"),
+                ClassId = AuthController.GuidFromString("4.T"),
                 Date = "2022-04-23",
                 EndTimeOfLessonsInMinutes = 810,
                 Day = "Thursday"
                 },
                                                                                 new Schedule {
-                ClassId = AuthController.GuidFromString("3.T"),
+                ClassId = AuthController.GuidFromString("4.T"),
                 Date = "2022-04-24",
                 EndTimeOfLessonsInMinutes = 810,
                 Day = "Friday"
