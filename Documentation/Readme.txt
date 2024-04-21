@@ -1,0 +1,2 @@
+To run the API succesfully you need to be either connected to the school wifi to access the LDAP server or just comment the LDAP part of the code.
+You will also need to import the data from this folder to the database.

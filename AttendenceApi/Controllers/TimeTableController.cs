@@ -27,8 +27,8 @@ namespace AttendenceApi.Controllers
 
         
         [HttpGet("Get/Timetable")] 
-        public async Task<IActionResult> GetTimeTable()
-        {
+        public async Task<IActionResult> GetTimeTable() // sends this weeks timetable
+        { 
 
             var user = _context.Users.FirstOrDefault(s => s.UserName == Request.HttpContext.User.Identity.Name);
             if (user == null) // if user isnt found
@@ -96,7 +96,7 @@ namespace AttendenceApi.Controllers
        
         [HttpPost("Create/Timetable")]
         [Authorize(Policy = Policies.TEACHER)]
-        public async Task<IActionResult> CreateTimeTable([FromBody] List<CreateScheduleVM> model)
+        public async Task<IActionResult> CreateTimeTable([FromBody] List<CreateScheduleVM> model) // used for creating custom timetable
         {
             // Log the start of the timetable creation process
             _logger.LogInformation("Starting to create timetable");
@@ -191,10 +191,11 @@ namespace AttendenceApi.Controllers
 
         [HttpPost("Create/EverydayTimetable")]
         [Authorize(Policy = Policies.TEACHER)]
-        public async Task<IActionResult> CreateEverydayTimetable([FromBody] List<EverydayScheduleVM> model)
+        public async Task<IActionResult> CreateEverydayTimetable([FromBody] List<EverydayScheduleVM> model) // Used for creating the base timetable for each class
         {
             if (model == null)
             {
+                _logger.LogInformation("No data sent");
                 return BadRequest("No data sent");
             }
 
@@ -224,6 +225,7 @@ namespace AttendenceApi.Controllers
                     var teacher = await _context.Users.FirstOrDefaultAsync(x => x.UserName == model[i].Lessons[s].Teacher);
                     if (teacher == null)
                     {
+                        _logger.LogError($"Teacher {model[i].Lessons[s].Teacher} not found");
                         return BadRequest($"Teacher {model[i].Lessons[s].Teacher} not found");
                     }
                     
@@ -239,6 +241,7 @@ namespace AttendenceApi.Controllers
                 }
                 await _context.SaveChangesAsync();
             }
+            _logger.LogInformation($"Base timetable for class {model[0].ClassId} was successfully made");
             return Ok("Timetable Added");
 
         }

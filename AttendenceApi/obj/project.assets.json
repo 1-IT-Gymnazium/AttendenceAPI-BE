@@ -10889,11 +10889,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jjiri\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+      "projectUniqueName": "C:\\Users\\jjiri\\source\\repos\\AttendencyProject\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
       "projectName": "AttendenceApi",
-      "projectPath": "C:\\Users\\jjiri\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+      "projectPath": "C:\\Users\\jjiri\\source\\repos\\AttendencyProject\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
       "packagesPath": "C:\\Users\\jjiri\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jjiri\\source\\repos\\attendencyprojectv2\\AttendenceApi\\obj\\",
+      "outputPath": "C:\\Users\\jjiri\\source\\repos\\AttendencyProject\\attendencyprojectv2\\AttendenceApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\jjiri\\AppData\\Roaming\\NuGet\\NuGet.Config",

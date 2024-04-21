@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sfLLMwb7PX4q6QPwweJdYk3LExt2qQ2ietN1NBimspmh/I2ZN9oq9NBC4J3c4zEkj0dn95ouOQ5xIIzpl5mrTA==",
+  "dgSpecHash": "3+wpjISxBKA/gDDXDQ4B9txIpDk94pcht7K0ksDlFc9tNkXIrCeEubJag9UiPYqPdTVAOTj6tn0KwpN6657A/A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\jjiri\\source\\repos\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
+  "projectFilePath": "C:\\Users\\jjiri\\source\\repos\\AttendencyProject\\attendencyprojectv2\\AttendenceApi\\AttendenceApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.6.0\\amazon.lambda.apigatewayevents.2.6.0.nupkg.sha512",
     "C:\\Users\\jjiri\\.nuget\\packages\\amazon.lambda.applicationloadbalancerevents\\2.1.0\\amazon.lambda.applicationloadbalancerevents.2.1.0.nupkg.sha512",
