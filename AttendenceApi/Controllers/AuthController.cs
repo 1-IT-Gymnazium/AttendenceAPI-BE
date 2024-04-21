@@ -103,7 +103,7 @@ namespace AttendenceApi.Controllers
         public async Task<IActionResult> LoginAsyncc(LoginViewModel model)
         {
             // Attempt to connect to LDAP with provided credentials
-            /*
+            
             _logger.LogInformation($"Attempting LDAP authentication for user {model.Name}");
             var directoryEntry = new DirectoryEntry("LDAP://10.129.0.12", model.Name, model.Password);
             var directorySearcher = new DirectorySearcher(directoryEntry);
@@ -115,7 +115,7 @@ namespace AttendenceApi.Controllers
             {
                 _logger.LogWarning($"LDAP authentication failed for user {model.Name}: {ex}");
                 return NotFound("User or password wrong");
-            }*/
+            }
 
             // Check if the user exists in the local database
             _logger.LogInformation($"Checking local database for user {model.Name}");
